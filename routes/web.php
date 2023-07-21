@@ -7,6 +7,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Manufacturer\ManufacturerController;
 use App\Http\Controllers\Medicine\MedicineController;
 use App\Http\Controllers\Medicine\StockController;
+use App\Http\Controllers\POS\POSController;
 use App\Http\Controllers\Purchase\PurchaseController;
 use Illuminate\Support\Facades\Route;
 
@@ -32,7 +33,7 @@ Route::get("/", [DashboardController::class, "index"])
     ->middleware("auth");
 
 
-Route::group(["prefix" => "dashbaord"], function (){
+Route::group(["prefix" => "dashboard"], function (){
     Route::get("/", [DashboardController::class, "index"])->name("dashboard");
 
     Route::resource('customers', CustomerController::class);
@@ -60,5 +61,9 @@ Route::group(["prefix" => "dashbaord"], function (){
     Route::get('purchase', [PurchaseController::class, "index"])->name("purchases.index");
     Route::get('purchase/create', [PurchaseController::class, "create"])->name("purchases.create");
     Route::post('purchase/store', [PurchaseController::class, "store"])->name("purchases.store");
+
+    // pos
+    Route::get('pos', [POSController::class, "index"])->name("pos");
+    Route::post('pos/add-to-cart', [POSController::class, "addToCart"]);
 
 });

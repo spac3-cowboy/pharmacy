@@ -1,5 +1,5 @@
 <div class="table-responsive">
-    <table class="table table-centered w-100 dt-responsive nowrap" id="stocks-datatable">
+    <table class="table table-centered w-100 dt-responsive nowrap" id="medicines-datatable">
         <thead class="table-light">
             <tr>
                 <th class="all">#</th>
@@ -8,15 +8,15 @@
                 <th>Name</th>
                 <th>Generic Name</th>
                 <th>Shelf</th>
-                <th>Buy Price</th>
+                <th>Manufacturing Price</th>
                 <th>Selling Price</th>
                 <th>Strength</th>
                 <th>Category</th>
+                <th>Manufacturer</th>
                 <th>Purchase Date</th>
                 <th>Manufacturing Date</th>
                 <th>Expiry Date</th>
-                <th>Cost</th>
-                <th>Manufacturer</th>
+                <th>Action</th>
             </tr>
         </thead>
         <tbody>
@@ -64,7 +64,7 @@
             $('#stocks-datatable').DataTable({
                 processing: true,
                 serverSide: true,
-                ajax: "{{ route('stocks.instock') }}",
+                ajax: "{{ route('stocks.index') }}",
                 columns: [
                     { data: 'id', name: 'id' },
                     { data: 'batch', name: 'batch' },
@@ -72,15 +72,15 @@
                     { data: 'name', name: 'name' },
                     { data: 'generic_name', name: 'generic_name' },
                     { data: 'shelf', name: 'shelf' },
-                    { data: 'buy_price', name: 'buy_price' },
+                    { data: 'manufacturing_price', name: 'manufacturing_price' },
                     { data: 'price', name: 'price' },
                     { data: 'strength', name: 'strength' },
-                    { data: 'purchase_date', name: 'purchase_date' },
+                    { data: 'category', name: 'category' },
                     { data: 'manufacturer', name: 'manufacturer' },
+                    { data: 'purchase_date', name: 'purchase_date' },
                     { data: 'manufacturing_date', name: 'manufacturing_date' },
                     { data: 'expiry_date', name: 'expiry_date' },
-                    { data: 'cost', name: 'cost' },
-                    // { data: 'action', name: 'action', orderable: false, searchable: false },
+                    { data: 'action', name: 'action', orderable: false, searchable: false },
                 ]
             });
         });

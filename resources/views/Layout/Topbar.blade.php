@@ -22,6 +22,14 @@
         </div>
 
         <ul class="topbar-menu d-flex align-items-center gap-3">
+
+            <!-- POS -->
+            <li class="d-none d-sm-inline-block">
+                <a class="nav-link" href="{{ route('pos') }}">
+                    <i class="uil uil-box"></i>
+                </a>
+            </li>
+
             <li class="dropdown d-lg-none">
                 <a class="nav-link dropdown-toggle arrow-none" data-bs-toggle="dropdown" href="#" role="button"
                    aria-haspopup="false" aria-expanded="false">
@@ -73,10 +81,10 @@
                                         </div>
                                     </div>
                                     <div class="flex-grow-1 text-truncate ms-2">
-                                        <h5 class="noti-item-title fw-semibold font-14">Datacorp <small
-                                                class="fw-normal text-muted ms-1">1 min ago</small></h5>
+                                        <h5 class="noti-item-title fw-semibold font-14">Datacorp <small class="fw-normal text-muted ms-1">1 min ago</small></h5>
                                         <small class="noti-item-subtitle text-muted">Caleb Flakelar commented on
-                                            Admin</small>
+                                            Admin
+                                        </small>
                                     </div>
                                 </div>
                             </div>
@@ -190,6 +198,7 @@
                     <i class="ri-settings-3-line font-22"></i>
                 </a>
             </li>
+
 
 
 

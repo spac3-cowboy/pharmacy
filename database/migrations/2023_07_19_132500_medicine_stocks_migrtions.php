@@ -13,8 +13,15 @@ return new class extends Migration
     {
         Schema::create('stocks', function (Blueprint $table) {
             $table->id();
-            $table->unsignedInteger("quantity");
+            $table->unsignedInteger("quantity"); // quantity = available amount of medicines
             $table->unsignedBigInteger("medicine_id");
+            $table->unsignedBigInteger("manufacturer_id");
+            $table->date("manufacturing_date");
+            $table->date("expiry_date");
+            $table->string("batch");
+            $table->unsignedDouble("buy_price");
+            $table->unsignedDouble("mrp");
+            $table->unsignedDouble("cost");
             $table->timestamps();
         });
     }

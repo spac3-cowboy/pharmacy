@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Medicine;
 use App\Http\Controllers\Controller;
 use App\Models\Medicine\Stock;
 use Illuminate\Http\Request;
+use Yajra\DataTables\DataTables;
 
 class StockController extends Controller
 {
@@ -64,10 +65,54 @@ class StockController extends Controller
         //
     }
 
-    public function inStock()
+    public function inStock(Request $request)
     {
-        $stocks = Stock::where("")->get();
-        return view("ui.stock.pages.PaginatedInStock");
+        $stocks = Stock::inStockProducts();
+        if ( $request->ajax() ) {
+            return DataTables::of($stocks)
+                    ->addColumn("name", function ($stock){
+                        return $stock->medicine->name;
+                    })
+                    ->addColumn("generic_name", function ($stock){
+                        return $stock->medicine->generic_name;
+                    })
+                    ->addColumn("strength", function ($stock){
+                        return $stock->medicine->generic_name;
+                    })
+                    ->addColumn("shelf", function ($stock){
+                        return $stock->medicine->shelf;
+                    })
+                    ->addColumn("avl_qty", function ($stock){
+                        return $stock->quantity;
+                    })
+                    ->addColumn("buy_price", function ($stock){
+                        return $stock->quantity;
+                    })
+                    ->addColumn("purchase_date", function ($stock){
+                        return $stock->created_at;
+                    })
+                    ->addColumn("manufacturer", function ($stock){
+                        return $stock->manufacturer->name;
+                    })
+                    ->addColumn("price", function ($stock){
+                        return $stock->mrp;
+                    })
+                    ->rawColumns([
+                        'name',
+                        'generic_name',
+                        'strength',
+                        'shelf',
+                        'avl_qty',
+                        'purchase_date',
+                        'price',
+                        'manufacturer',
+                        'action'
+                    ])
+                    ->make();
+        }
+        return view("ui.stock.pages.PaginatedInStock", [
+            "stocks" => $stocks
+        ]);
     }
     public function outOfStock()
     {
