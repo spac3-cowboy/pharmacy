@@ -11,12 +11,12 @@
                 <th>Buy Price</th>
                 <th>Selling Price</th>
                 <th>Strength</th>
-                <th>Category</th>
                 <th>Purchase Date</th>
+                <th>Manufacturer</th>
+                <th>Emergency</th>
                 <th>Manufacturing Date</th>
                 <th>Expiry Date</th>
                 <th>Cost</th>
-                <th>Manufacturer</th>
             </tr>
         </thead>
         <tbody>
@@ -77,6 +77,7 @@
                     { data: 'strength', name: 'strength' },
                     { data: 'purchase_date', name: 'purchase_date' },
                     { data: 'manufacturer', name: 'manufacturer' },
+                    { data: 'emergency', name: 'emergency   ' },
                     { data: 'manufacturing_date', name: 'manufacturing_date' },
                     { data: 'expiry_date', name: 'expiry_date' },
                     { data: 'cost', name: 'cost' },

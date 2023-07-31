@@ -13,6 +13,8 @@ return new class extends Migration
     {
         Schema::create('medicines', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('business_id');
+
             $table->string("name")->unique();
             $table->string("generic_name");
             $table->string("shelf");
@@ -22,6 +24,7 @@ return new class extends Migration
             $table->string("image");
             $table->unsignedBigInteger("category_id");
             $table->unsignedBigInteger("manufacturer_id");
+            $table->unsignedBigInteger("unit_id");
 
             $table->foreign("category_id")
                 ->references("id")
@@ -30,6 +33,10 @@ return new class extends Migration
             $table->foreign("manufacturer_id")
                 ->references("id")
                 ->on("manufacturers");
+
+            $table->foreign("unit_id")
+                ->references("id")
+                ->on("units");
 
             $table->softDeletes();
             $table->timestamps();

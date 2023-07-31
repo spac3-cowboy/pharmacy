@@ -6,10 +6,11 @@ use App\Models\Category\Category;
 use App\Models\Manufacturer\Manufacturer;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Medicine extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
     protected $guarded = [];
 
     public function category()
@@ -21,4 +22,8 @@ class Medicine extends Model
         return $this->belongsTo(Manufacturer::class);
     }
 
+    public function stocks()
+    {
+        return $this->hasMany(Stock::class);
+    }
 }

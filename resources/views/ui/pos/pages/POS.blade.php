@@ -2,116 +2,50 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>POS</title>
     <!-- Icons css -->
     <link href="{{ asset('assets/css/icons.min.css') }}" rel="stylesheet" type="text/css" />
 
-    <script src="https://code.jquery.com/jquery-3.7.0.slim.min.js" integrity="sha256-tG5mcZUtJsZvyKAxYLVXrmjKBVLd6VpVccqz/r4ypFE=" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
 
     <link rel="stylesheet" href="{{ asset("assets/css/pos.css") }}">
     <link rel="stylesheet" href="{{ asset("assets/vendor/select2/css/select2.min.css") }}">
+
+    <!---------------------- Custom CSS -------------------->
+    <link href="{{ asset('/assets/css/custom.css') }}" rel="stylesheet" type="text/css" />
+
+    @viteReactRefresh
+    @vite('resources/js/Main.jsx')
 </head>
 <body>
-    <div class="container">
-        <div class="product-container" id="left">
-            <div class="product-controls">
-                <div class="search-box">
-                    <span class="search-icon">
-                        <i class="uil uil-search-alt"></i>
-                    </span>
-                    <input type="text" placeholder="Search Here" id="search-box-input">
-                    <span class="qr-icon">
-                        <i class="mdi mdi-qrcode-scan"></i>
-                    </span>
-                </div>
-                <div class="selectors">
-                    <select name="category" id="category" class="category">
-                        <option value="">Category</option>
-                        @foreach($categories as $category)
-                        <option value="{{ $category->id }}">{{ $category->name }}</option>
-                        @endforeach
-                    </select>
-                    <select name="vendor" id="vendor">
-                        <option value="">Select Vendor</option>
-                        @foreach($vendors as $vendor)
-                            <option value="{{ $vendor->id }}">{{ $vendor->name }}</option>
-                        @endforeach
-                    </select>
-                </div>
-            </div>
-            <div class="products-container">
-                @foreach($stocks as $stock)
-                <div class="product">
-                    <div class="product-image">
-                        <img src="/assets/images/medicine/{{ $stock->medicine->image }}" alt="Image">
-                    </div>
-                    <div class="product-title">{{ $stock->medicine->name }}</div>
-                    <div class="product-price">
-                        <span class="badge">
-                            {{ $stock->mrp }} taka
-                        </span>
-                    </div>
-                    <div class="product-add-button">
-                        <button onclick="add({{ $stock->medicine_id }})">Add</button>
-                    </div>
-                </div>
-                @endforeach
-            </div>
-        </div>
-        <div  id="right">
-            <div id="customer-section">
-                <button id="add-customer-button">
-                    <i class="mdi mdi-account-plus"></i>
-                    Add New Customer
-                </button>
-                <select name="customer" id="customer" class="customer">
-                    <option value="">Customer</option>
-                    @foreach($customers as $customer)
-                        <option value="{{ $customer->id }}">{{ $customer->name }}</option>
-                    @endforeach
-                </select>
-                <a href="{{ route('dashboard') }}">
-                    <button id="dashboard-button">
-                        <i class="mdi mdi-desktop-mac"></i>
-                    </button>
-                </a>
-            </div>
-            <div id="cash-register">
-                <div id="added-product-list-container">
-                    <table>
-                        <thead>
-                        <tr>
-                            <th>MEDICINE</th>
-                            <th>BATCH</th>
-                            <th>EXPIRY</th>
-                            <th>QUANTITY</th>
-                            <th>PRICE</th>
-                            <th>DISCOUNT %</th>
-                            <th>TOTAL</th>
-                            <th>
-                                <i class="mdi mdi-delete"></i>
-                            </th>
-                        </tr>
-                        </thead>
-                        <tbody id="tbody">
 
-                        </tbody>
-                    </table>
-                </div>
-                <div id="calculations-container"></div>
-            </div>
+    <!-- Overlay -->
+    <div id="overlay" class="hide">
+        <div id="loader">
+
         </div>
+    </div>
+    <!-- Overlay End -->
+
+    <div id="app">
+
     </div>
 
 
-
     <!-- MDI Icons Demo js -->
-    <script src="{{ asset('assets/js/pages/demo.materialdesignicons.js') }}"></script>
+{{--    <script src="{{ asset('assets/js/pages/demo.materialdesignicons.js') }}"></script>--}}
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.7.0.slim.min.js" integrity="sha256-tG5mcZUtJsZvyKAxYLVXrmjKBVLd6VpVccqz/r4ypFE=" crossorigin="anonymous"></script>
 
     <!-- Select2 js -->
     <script src="{{ asset('assets/vendor/select2/js/select2.min.js') }}"></script>
+
+    <!-- Common Script All Across the App js -->
+    <script src="{{ asset('assets/js/common.js') }}"></script>
 
 
     <script type="text/javascript">
@@ -185,6 +119,11 @@
             return select;
         }
     </script>
+
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.min.js" integrity="sha384-cuYeSxntonz0PPNlHhBs68uyIAVpIIOZZ5JqeqvYYIcEL727kskC66kF92t6Xl2V" crossorigin="anonymous"></script>
+
 </body>
 </html>
 

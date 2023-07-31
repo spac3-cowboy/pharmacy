@@ -8,6 +8,7 @@ use App\Http\Requests\Manufacturer\CreateManufacturerRequest;
 use App\Models\Manufacturer\Manufacturer;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Yajra\DataTables\DataTables;
 
 class ManufacturerController extends Controller
@@ -19,7 +20,7 @@ class ManufacturerController extends Controller
     {
 
         if ( $request->ajax() ) {
-            $manufacturers = Manufacturer::all();
+            $manufacturers = Manufacturer::where("business_id", Auth::user()->tenant->id)->get();
             return DataTables::of($manufacturers)
                 ->addColumn('medicine', function ($manufacturer){
                     return 0;
@@ -54,7 +55,10 @@ class ManufacturerController extends Controller
      */
     public function store(CreateManufacturerRequest $request)
     {
-        Manufacturer::create($request->only("name", "phone", "email", "address"));
+        $data = $request->only("name", "phone", "email", "address");
+        $data["business_id"] = Auth::user()->tenant->id;
+
+        Manufacturer::create($data);
 
         return redirect()->route("manufacturers.index");
     }

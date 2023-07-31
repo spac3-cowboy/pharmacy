@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateCustomerRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Yajra\DataTables\DataTables;
 
@@ -56,9 +57,10 @@ class CustomerController extends Controller
         if ( $request->exists("bg") )
         {
             $data["bg"] = $request->bg;
-        }
 
+        }
         $data["user_type"] = 4;
+        $data["business_id"] = Auth::user()->tenant->id;
 //        dd($data);
 
         $user = User::create($data);

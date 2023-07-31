@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Category\Category;
 use App\Models\Medicine\Medicine;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Yajra\DataTables\DataTables;
 
 class CategoryController extends Controller
@@ -17,7 +18,7 @@ class CategoryController extends Controller
     {
 
         if ( $request->ajax() ) {
-            $categories = Category::all();
+            $categories = Category::where("business_id", Auth::user()->tenant->id)->get();
             return DataTables::of($categories)
                 ->addColumn('medicine', function ($category){
                     return $category->medicines->count();
@@ -56,7 +57,8 @@ class CategoryController extends Controller
             "name" => "required|string"
         ]);
         Category::create([
-            "name" => $request->name
+            "name" => $request->name,
+            "business_id" => Auth::user()->tenant->id
         ]);
         return redirect()->route("categories.index")->with(["msg" => "Category Created Successfully"]);
     }

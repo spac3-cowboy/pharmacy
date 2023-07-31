@@ -1,5 +1,5 @@
 <!-- ========== Left Sidebar Start ========== -->
-<div class="leftside-menu">
+<div class="leftside-menu" style="background: black;">
 
     <!-- Brand Logo Light -->
     <a href="/" class="logo logo-light" style="background: #262d36;">
@@ -44,33 +44,39 @@
         <!--- Sidemenu -->
         <ul class="side-nav">
 
-            <!-- Dashboard -->
+            <!-- Tenants -->
+            @can("super-admin")
             <li class="side-nav-item">
-                <a data-bs-toggle="collapse" href="#sidebarDashboards" aria-expanded="false"
-                   aria-controls="sidebarDashboards" class="side-nav-link">
-                    <i class="ri-dashboard-line"></i>
-                    <span class="badge bg-success float-end">5</span>
-                    <span> Dashboards </span>
+                <a data-bs-toggle="collapse" href="#sidebarTenant" aria-expanded="false" aria-controls="sidebarTenant" class="side-nav-link">
+                    <i class="ri-home-4-fill"></i>
+                    <span> Tenants </span>
+                    <span class="menu-arrow"></span>
                 </a>
-                <div class="collapse" id="sidebarDashboards">
+                <div class="collapse" id="sidebarTenant">
                     <ul class="side-nav-second-level">
                         <li>
-                            <a href="dashboard-analytics.html">Analytics</a>
+                            <a href="{{ route('tenants.index') }}">
+                                <i class="mdi mdi-format-list-numbered"></i>
+                                Tenant List
+                            </a>
                         </li>
                         <li>
-                            <a href="index.html">Ecommerce</a>
-                        </li>
-                        <li>
-                            <a href="dashboard-projects.html">Projects</a>
-                        </li>
-                        <li>
-                            <a href="dashboard-crm.html">CRM</a>
-                        </li>
-                        <li>
-                            <a href="dashboard-wallet.html">E-Wallet</a>
+                            <a href="{{ route('tenants.create') }}">
+                                <i class="mdi mdi-format-list-numbered"></i>
+                                New Tenant
+                            </a>
                         </li>
                     </ul>
                 </div>
+            </li>
+            @endcan
+
+            <!-- Dashboard -->
+            <li class="side-nav-item">
+                <a href="{{ route('dashboard') }}" class="side-nav-link">
+                    <i class="ri-dashboard-line"></i>
+                    <span> Dashboards </span>
+                </a>
             </li>
 
             <!-- Customer -->
@@ -124,6 +130,31 @@
                 </div>
             </li>
 
+            <!-- Vendor -->
+            <li class="side-nav-item">
+                <a data-bs-toggle="collapse" href="#sidebarVendor" aria-expanded="false" aria-controls="sidebarVendor" class="side-nav-link">
+                    <i class="mdi mdi-window-open-variant"></i>
+                    <span> Vendors </span>
+                    <span class="menu-arrow"></span>
+                </a>
+                <div class="collapse" id="sidebarVendor">
+                    <ul class="side-nav-second-level">
+                        <li>
+                            <a href="{{ route('vendors.index') }}">
+                                <i class="mdi mdi-format-list-numbered"></i>
+                                Vendors List
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ route('vendors.create') }}">
+                                <i class="mdi mdi-bank-plus"></i>
+                                Add Vendor
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </li>
+
             <!-- Medicine -->
             <li class="side-nav-item">
                 <a data-bs-toggle="collapse" href="#sidebarMedicine" aria-expanded="false" aria-controls="sidebarMedicine" class="side-nav-link">
@@ -149,6 +180,12 @@
                             <a href="{{ route('categories.index') }}">
                                 <i class="mdi mdi-format-list-numbered"></i>
                                 Categories List
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ route('units.index') }}">
+                                <i class="mdi mdi-format-list-numbered"></i>
+                                Unit List
                             </a>
                         </li>
                     </ul>
@@ -201,7 +238,7 @@
             <!-- Purchase -->
             <li class="side-nav-item">
                 <a data-bs-toggle="collapse" href="#sidebarPurchase" aria-expanded="false" aria-controls="sidebarPurchase" class="side-nav-link">
-                    <i class="uil uil-moneybag"></i>
+                    <i class="mdi mdi-account-cash"></i>
                     <span> Purchase </span>
                     <span class="menu-arrow"></span>
                 </a>
@@ -215,12 +252,84 @@
                         </li>
                         <li>
                             <a href="{{ route('purchases.create') }}">
-                                <i class="mdi mdi-format-list-numbered"></i>
+                                <i class="mdi mdi-basket-plus"></i>
                                 New Purchase
                             </a>
                         </li>
                     </ul>
                 </div>
+            </li>
+
+            <!-- Sales -->
+            <li class="side-nav-item">
+                <a data-bs-toggle="collapse" href="#sidebarSales" aria-expanded="false" aria-controls="sidebarSales" class="side-nav-link">
+                    <i class="uil uil-moneybag"></i>
+                    <span> Sales </span>
+                    <span class="menu-arrow"></span>
+                </a>
+                <div class="collapse" id="sidebarSales">
+                    <ul class="side-nav-second-level">
+                        <li>
+                            <a href="{{ route('sales.index') }}">
+                                <i class="mdi mdi-format-list-numbered"></i>
+                                Sales List
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ route('pos') }}">
+                                <i class="mdi mdi-basket-plus"></i>
+                                New Sale
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </li>
+
+            <!-- Reports -->
+            <li class="side-nav-item">
+                <a data-bs-toggle="collapse" href="#sidebarReport" aria-expanded="false" aria-controls="sidebarReport" class="side-nav-link">
+                    <i class="ri-line-chart-line"></i>
+                    <span> Reports </span>
+                    <span class="menu-arrow"></span>
+                </a>
+                <div class="collapse" id="sidebarReport">
+                    <ul class="side-nav-second-level">
+                        <li>
+                            <a href="{{ route('reports.sales') }}">
+                                <i class="mdi mdi-format-list-numbered"></i>
+                                Sales Report
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ route('reports.purchase') }}">
+                                <i class="mdi mdi-format-list-numbered"></i>
+                                Purchase Report
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ route('reports.topsoldmedicines') }}">
+                                <i class="mdi mdi-format-list-numbered"></i>
+                                Top Sold Medicines
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ route('reports.profit') }}">
+                                <i class="mdi mdi-format-list-numbered"></i>
+                                Profit
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </li>
+
+
+            <!-- Settings -->
+            <li class="side-nav-item">
+                <a href="{{ route('settings.index') }}" class="side-nav-link">
+                    <i class="ri-settings-4-fill"></i>
+                    <span> Settings </span>
+                    <span class="menu-arrow"></span>
+                </a>
             </li>
 
         </ul>

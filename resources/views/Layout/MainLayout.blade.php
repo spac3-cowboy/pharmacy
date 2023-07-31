@@ -5,10 +5,12 @@
 <!-- sp.ac3_cowboyicons-mdi time log Thu, 08 Jun 2023 03:57:30 GMT -->
 <head>
     <meta charset="utf-8" />
-    <title>Material Design Icons | Hyper - Responsive Bootstrap 5 Admin Dashboard</title>
+    <title>@yield("title")</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta content="A fully featured admin theme which can be used to build CRM, CMS, etc." name="description" />
     <meta content="Coderthemes" name="author" />
+
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <!-- App favicon -->
     <link rel="shortcut icon" href="{{ asset('/assets/images/title.ico') }}">
@@ -40,6 +42,15 @@
 </head>
 
 <body>
+
+<!-- Overlay -->
+<div id="overlay" class="hide">
+    <div id="loader">
+
+    </div>
+</div>
+<!-- Overlay End -->
+
 <!-- Begin page -->
 <div class="wrapper">
 
@@ -104,8 +115,13 @@
 <script src="{{ asset('assets/js/sweetalert2@11.js') }}"></script>
 
 
+<!-- Common Script All Across the App js -->
+<script src="{{ asset('assets/js/common.js') }}"></script>
+
 
 @yield("scripts")
+
+
 
 
 </body>

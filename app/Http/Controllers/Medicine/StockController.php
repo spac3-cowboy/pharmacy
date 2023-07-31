@@ -4,7 +4,9 @@ namespace App\Http\Controllers\Medicine;
 
 use App\Http\Controllers\Controller;
 use App\Models\Medicine\Stock;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Yajra\DataTables\DataTables;
 
 class StockController extends Controller
@@ -67,7 +69,25 @@ class StockController extends Controller
 
     public function inStock(Request $request)
     {
-        $stocks = Stock::inStockProducts();
+        $key = $request->get("key");
+        $cat_id = $request->get("cat_id");
+        $vendor_id = $request->get("vendor_id");
+
+        $stocks = Stock::with(["medicine.category", "manufacturer"])
+            ->whereDate("expiry_date", ">", Carbon::today()->toDateString())
+            ->where("quantity", ">",     0)
+            ->where("business_id", Auth::user()->tenant->id)
+            ->whereHas("medicine", function($query) use($key, $cat_id, $vendor_id) {
+                if ( $key ) {
+                    $query->where("name", "like", "%$key%");
+                }
+                if ( $cat_id ) {
+                    $query->where("category_id", $cat_id);
+                }
+            })
+            ->get();
+
+
         if ( $request->ajax() ) {
             return DataTables::of($stocks)
                     ->addColumn("name", function ($stock){
@@ -77,7 +97,7 @@ class StockController extends Controller
                         return $stock->medicine->generic_name;
                     })
                     ->addColumn("strength", function ($stock){
-                        return $stock->medicine->generic_name;
+                        return $stock->medicine->strength;
                     })
                     ->addColumn("shelf", function ($stock){
                         return $stock->medicine->shelf;
@@ -97,6 +117,9 @@ class StockController extends Controller
                     ->addColumn("price", function ($stock){
                         return $stock->mrp;
                     })
+                    ->addColumn("emergency", function ($stock){
+                        return $stock->emergency ? "<span class='badge badge-danger-lighten'>YES<span>" : "<span class='badge badge-secondary-lighten'>NO<span>";
+                    })
                     ->rawColumns([
                         'name',
                         'generic_name',
@@ -106,6 +129,7 @@ class StockController extends Controller
                         'purchase_date',
                         'price',
                         'manufacturer',
+                        'emergency',
                         'action'
                     ])
                     ->make();
@@ -114,20 +138,201 @@ class StockController extends Controller
             "stocks" => $stocks
         ]);
     }
-    public function outOfStock()
+    public function outOfStock(Request $request)
     {
-        return view("ui.stock.pages.PaginatedInStock");
+
+        $key = $request->get("key");
+        $cat_id = $request->get("cat_id");
+        $vendor_id = $request->get("vendor_id");
+
+        $stocks = Stock::with(["medicine.category", "manufacturer"])
+            ->whereDate("expiry_date", ">", Carbon::today()->toDateString())
+            ->where("quantity", "<",     1)
+            ->where("business_id", Auth::user()->owned_tenant->id)
+            ->whereHas("medicine", function($query) use($key, $cat_id, $vendor_id) {
+                if ( $key ) {
+                    $query->where("name", "like", "%$key%");
+                }
+                if ( $cat_id ) {
+                    $query->where("category_id", $cat_id);
+                }
+            })
+            ->get();
+        if ( $request->ajax() ) {
+            return DataTables::of($stocks)
+                ->addColumn("name", function ($stock){
+                    return $stock->medicine->name;
+                })
+                ->addColumn("generic_name", function ($stock){
+                    return $stock->medicine->generic_name;
+                })
+                ->addColumn("strength", function ($stock){
+                    return $stock->medicine->strength;
+                })
+                ->addColumn("shelf", function ($stock){
+                    return $stock->medicine->shelf;
+                })
+                ->addColumn("avl_qty", function ($stock){
+                    return $stock->quantity;
+                })
+                ->addColumn("buy_price", function ($stock){
+                    return $stock->quantity;
+                })
+                ->addColumn("purchase_date", function ($stock){
+                    return $stock->created_at;
+                })
+                ->addColumn("manufacturer", function ($stock){
+                    return $stock->manufacturer->name;
+                })
+                ->addColumn("price", function ($stock){
+                    return $stock->mrp;
+                })
+                ->rawColumns([
+                    'name',
+                    'generic_name',
+                    'strength',
+                    'shelf',
+                    'avl_qty',
+                    'purchase_date',
+                    'price',
+                    'manufacturer',
+                    'action'
+                ])
+                ->make();
+        }
+
+        return view("ui.stock.pages.PaginatedOutOfStock");
     }
     public function emergencyStock()
     {
         return view("ui.stock.pages.PaginatedInStock");
     }
-    public function expiredStock()
+    public function expiredStock(Request $request)
     {
-        return view("ui.stock.pages.PaginatedInStock");
+
+        $key = $request->get("key");
+        $cat_id = $request->get("cat_id");
+        $vendor_id = $request->get("vendor_id");
+
+        $stocks = Stock::with(["medicine.category", "manufacturer"])
+            ->whereDate("expiry_date", "<", Carbon::today()->toDateString())
+            ->where("quantity", ">",     0)
+            ->where("business_id", Auth::user()->owned_tenant->id)
+            ->whereHas("medicine", function($query) use($key, $cat_id, $vendor_id) {
+                if ( $key ) {
+                    $query->where("name", "like", "%$key%");
+                }
+                if ( $cat_id ) {
+                    $query->where("category_id", $cat_id);
+                }
+            })
+            ->get();
+        if ( $request->ajax() ) {
+            return DataTables::of($stocks)
+                ->addColumn("name", function ($stock){
+                    return $stock->medicine->name;
+                })
+                ->addColumn("generic_name", function ($stock){
+                    return $stock->medicine->generic_name;
+                })
+                ->addColumn("strength", function ($stock){
+                    return $stock->medicine->strength;
+                })
+                ->addColumn("shelf", function ($stock){
+                    return $stock->medicine->shelf;
+                })
+                ->addColumn("avl_qty", function ($stock){
+                    return $stock->quantity;
+                })
+                ->addColumn("buy_price", function ($stock){
+                    return $stock->quantity;
+                })
+                ->addColumn("purchase_date", function ($stock){
+                    return $stock->created_at;
+                })
+                ->addColumn("manufacturer", function ($stock){
+                    return $stock->manufacturer->name;
+                })
+                ->addColumn("price", function ($stock){
+                    return $stock->mrp;
+                })
+                ->rawColumns([
+                    'name',
+                    'generic_name',
+                    'strength',
+                    'shelf',
+                    'avl_qty',
+                    'purchase_date',
+                    'price',
+                    'manufacturer',
+                    'action'
+                ])
+                ->make();
+        }
+        return view("ui.stock.pages.PaginatedExpiredStock");
     }
-    public function toBeExpired()
+    public function toBeExpired(Request $request)
     {
-        return view("ui.stock.pages.PaginatedInStock");
+
+        $key = $request->get("key");
+        $cat_id = $request->get("cat_id");
+        $vendor_id = $request->get("vendor_id");
+
+        $stocks = Stock::with(["medicine.category", "manufacturer"])
+            ->whereDate("expiry_date", "<", Carbon::today()->subDays(30)->toDateString())
+            ->where("quantity", ">",     0)
+            ->where("business_id", Auth::user()->owned_tenant->id)
+            ->whereHas("medicine", function($query) use($key, $cat_id, $vendor_id) {
+                if ( $key ) {
+                    $query->where("name", "like", "%$key%");
+                }
+                if ( $cat_id ) {
+                    $query->where("category_id", $cat_id);
+                }
+            })
+            ->get();
+        if ( $request->ajax() ) {
+            return DataTables::of($stocks)
+                ->addColumn("name", function ($stock){
+                    return $stock->medicine->name;
+                })
+                ->addColumn("generic_name", function ($stock){
+                    return $stock->medicine->generic_name;
+                })
+                ->addColumn("strength", function ($stock){
+                    return $stock->medicine->strength;
+                })
+                ->addColumn("shelf", function ($stock){
+                    return $stock->medicine->shelf;
+                })
+                ->addColumn("avl_qty", function ($stock){
+                    return $stock->quantity;
+                })
+                ->addColumn("buy_price", function ($stock){
+                    return $stock->quantity;
+                })
+                ->addColumn("purchase_date", function ($stock){
+                    return $stock->created_at;
+                })
+                ->addColumn("manufacturer", function ($stock){
+                    return $stock->manufacturer->name;
+                })
+                ->addColumn("price", function ($stock){
+                    return $stock->mrp;
+                })
+                ->rawColumns([
+                    'name',
+                    'generic_name',
+                    'strength',
+                    'shelf',
+                    'avl_qty',
+                    'purchase_date',
+                    'price',
+                    'manufacturer',
+                    'action'
+                ])
+                ->make();
+        }
+        return view("ui.stock.pages.PaginatedToBeExpiredStock");
     }
 }

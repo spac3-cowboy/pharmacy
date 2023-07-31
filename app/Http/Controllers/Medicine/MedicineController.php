@@ -8,6 +8,7 @@ use App\Models\Category\Category;
 use App\Models\Manufacturer\Manufacturer;
 use App\Models\Medicine\Medicine;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Yajra\DataTables\DataTables;
 
 class MedicineController extends Controller
@@ -18,8 +19,9 @@ class MedicineController extends Controller
     public function index(Request $request)
     {
 
-        if ( $request->ajax() ) {
-            $medicines = Medicine::all();
+        if ( $request->ajax() )
+        {
+            $medicines = Medicine::where("business_id", Auth::user()->tenant->id)->get();
             return DataTables::of($medicines)
                 ->addColumn('category', function ($medicine){
                     return $medicine->category->name;
@@ -62,7 +64,8 @@ class MedicineController extends Controller
      */
     public function store(CreateMedicineRequest $request)
     {
-        $data = $request->except("_token");
+        $data = $request->except(["_token", "batch"]);
+        $data["business_id"] = Auth::user()->tenant->id;
         Medicine::create($data);
 
         return redirect()->route("medicines.index")->with(["msg" => "Medicine Created Successfully"]);

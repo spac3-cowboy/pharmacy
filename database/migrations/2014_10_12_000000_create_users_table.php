@@ -13,14 +13,17 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('business_id')->nullable();
             $table->string('name');
             $table->string('email')->unique();
             $table->string('phone')->unique();
-            $table->string('address', 500);
-            $table->string('bg'); // bg = blood group
-            $table->enum('user_type', [1,2,3,4])->default(2); // 1=admin, 2=Employee, 3=Doctor, 4=customer
+            $table->string('address', 500)->nullable();
+            $table->string('bg')->nullable(); // bg = blood group
+            $table->enum('user_type', [1,2,3,4])->default(2); // 1=super admin, 2=admin, 3=Doctor, 4=customer
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+
+
             $table->rememberToken();
             $table->timestamps();
         });

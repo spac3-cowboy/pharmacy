@@ -23,7 +23,7 @@
         "react-dom": "^18.2.0",
         "react-infinite-scroll-component": "^6.1.0",
         "react-router-dom": "^6.11.1",
-        "sweetalert2": "^11.7.5",
+        "sweetalert2": "^11.7.19",
         "sweetalert2-react-content": "^5.0.7",
         "swiper": "^9.3.2"
     }

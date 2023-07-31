@@ -3,9 +3,11 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Models\Tenant\Tenant;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Auth;
 use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
@@ -42,6 +44,19 @@ class User extends Authenticatable
 
     public static function customers()
     {
-        return User::where("user_type", 4)->get();
+        return User::where("user_type", 4)
+                    ->where("business_id", Auth::user()->tenant->id)
+                    ->get();
+    }
+
+
+    public function tenant()
+    {
+        return $this->hasOne(Tenant::class, "id", "business_id");
+    }
+
+    public function owned_tenant()
+    {
+        return $this->hasOne(Tenant::class, "user_id");
     }
 }

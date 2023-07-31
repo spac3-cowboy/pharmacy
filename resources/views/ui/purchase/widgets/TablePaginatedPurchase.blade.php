@@ -1,21 +1,12 @@
 <div class="table-responsive">
-    <table class="table table-centered w-100 dt-responsive nowrap" id="medicines-datatable">
+    <table class="table table-centered w-100 dt-responsive nowrap" id="purchase-datatable">
         <thead class="table-light">
             <tr>
                 <th class="all">#</th>
-                <th>Batch</th>
-                <th title="Available Quantity">Avl. Qty</th>
-                <th>Name</th>
-                <th>Generic Name</th>
-                <th>Shelf</th>
-                <th>Manufacturing Price</th>
-                <th>Selling Price</th>
-                <th>Strength</th>
-                <th>Category</th>
-                <th>Manufacturer</th>
                 <th>Purchase Date</th>
-                <th>Manufacturing Date</th>
-                <th>Expiry Date</th>
+                <th>Amount</th>
+                <th>Paid Amount</th>
+                <th>Medicines</th>
                 <th>Action</th>
             </tr>
         </thead>
@@ -61,25 +52,16 @@
 
 
         $(document).ready(function() {
-            $('#stocks-datatable').DataTable({
+            $('#purchase-datatable').DataTable({
                 processing: true,
                 serverSide: true,
-                ajax: "{{ route('stocks.index') }}",
+                ajax: "{{ route('purchases.index') }}",
                 columns: [
                     { data: 'id', name: 'id' },
-                    { data: 'batch', name: 'batch' },
-                    { data: 'avl_qty', name: 'avl_qty' },
-                    { data: 'name', name: 'name' },
-                    { data: 'generic_name', name: 'generic_name' },
-                    { data: 'shelf', name: 'shelf' },
-                    { data: 'manufacturing_price', name: 'manufacturing_price' },
-                    { data: 'price', name: 'price' },
-                    { data: 'strength', name: 'strength' },
-                    { data: 'category', name: 'category' },
-                    { data: 'manufacturer', name: 'manufacturer' },
                     { data: 'purchase_date', name: 'purchase_date' },
-                    { data: 'manufacturing_date', name: 'manufacturing_date' },
-                    { data: 'expiry_date', name: 'expiry_date' },
+                    { data: 'amount', name: 'amount' },
+                    { data: 'paid', name: 'paid' },
+                    { data: 'medicines', name: 'medicines' },
                     { data: 'action', name: 'action', orderable: false, searchable: false },
                 ]
             });
