@@ -11,7 +11,7 @@ function Right(props) {
 
     let [subtotal, setSubtotal] = useState(0);
     let [grandtotal, setGrandtotal] = useState(0);
-
+    let [vat_amount, setVatAmount] = useState(0);
 
     let flat_discount = useRef(0);
 
@@ -168,8 +168,8 @@ function Right(props) {
                                 <tr>
                                     <td style={{ background: "orange", color: "white",  width:"50%", border:"1px solid #aaa", padding: "10px 10px" }}>
                                         <div style={{ display: "flex", justifyContent: "space-between" }}>
-                                            <span>VAT </span>
-                                            <span id="vat">{ vat }%</span>
+                                            <span>VAT ({ vat }%)</span>
+                                            <span id="vat">{ vat_amount }</span>
                                         </div>
                                     </td>
                                     <td style={{ background: "brown", color: "white",  width:"50%", border:"1px solid #aaa", padding: "10px 10px" }}>

@@ -22,7 +22,7 @@ class PurchaseController extends Controller
      */
     public function index(Request $request)
     {
-        $purchases = Purchase::where("business_id", Auth::user()->tenant->id)->get();
+        $purchases = Purchase::where("business_id", Auth::user()->owned_tenant->id)->get();
 
         if ( $request->ajax() ) {
             return DataTables::of($purchases)
@@ -54,7 +54,7 @@ class PurchaseController extends Controller
      */
     public function create()
     {
-        $manufacturers = Manufacturer::where("business_id", Auth::user()->tenant->id)->get();
+        $manufacturers = Manufacturer::where("business_id", Auth::user()->owned_tenant->id)->get();
         return view("ui.purchase.pages.CreatePurchase", [
             "manufacturers" => $manufacturers
         ]);
@@ -83,7 +83,7 @@ class PurchaseController extends Controller
                 "amount" => $amount,
                 "vendor_id" => $vendor_id,
                 "paid" => $paid,
-                "business_id" => Auth::user()->tenant->id
+                "business_id" => Auth::user()->owned_tenant->id
             ]);
             foreach ($items as $item)
             {
@@ -97,7 +97,7 @@ class PurchaseController extends Controller
                     "mrp" => $item["mrp"],
                     "buy_price" => $item["buy_price"],
                     "flat_discount" => $item["flat_discount"],
-                    "business_id" => Auth::user()->tenant->id
+                    "business_id" => Auth::user()->owned_tenant->id
                 ]);
             }
 
@@ -113,13 +113,14 @@ class PurchaseController extends Controller
                         "medicine_id" => $item["medicine_id"],
                         "quantity" => $item["quantity"],
                         "manufacturer_id" => $manufacturer_id,
-                        "manufacturing_date" => $item["manufacturing_date"],
+	                    "vendor_id" => $vendor_id,
+	                    "manufacturing_date" => $item["manufacturing_date"],
                         "expiry_date" => $item["expiry_date"],
                         "batch" => $batch,
                         "mrp" => $item["mrp"],
                         "buy_price" => $item["buy_price"],
                         "cost" => $cost,
-                        "business_id" => Auth::user()->tenant->id
+                        "business_id" => Auth::user()->owned_tenant->id
                     ]);
                 }
                 else
@@ -144,7 +145,7 @@ class PurchaseController extends Controller
     {
         $purchase = Purchase::with(["items.medicine"])
                     ->where("id", $id)
-                    ->where("business_id", Auth::user()->tenant->id)
+                    ->where("business_id", Auth::user()->owned_tenant->id)
                     ->first();
 //        dd($purchase->items);
         return view("ui.purchase.pages.ShowPurchase", [
@@ -179,10 +180,10 @@ class PurchaseController extends Controller
 
     public function getPageData()
     {
-        $manufacturers = Manufacturer::where("business_id", Auth::user()->tenant->id)->get();
-        $vendors = Vendor::where("business_id", Auth::user()->tenant->id)->get();
+        $manufacturers = Manufacturer::where("business_id", Auth::user()->owned_tenant->id)->get();
+        $vendors = Vendor::where("business_id", Auth::user()->owned_tenant->id)->get();
         $medicines = Medicine::with(["manufacturer"])
-                     ->where("business_id", Auth::user()->tenant->id)
+                     ->where("business_id", Auth::user()->owned_tenant->id)
                      ->get();
         return [
             "msg" => "success",

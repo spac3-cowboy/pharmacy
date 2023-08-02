@@ -47,10 +47,11 @@
     <!-- Overlay End -->
 
 
+    @auth()
     <!-- ========== Topbar Start ========== -->
     @include("Layout.Topbar")
     <!-- ========== Topbar End ========== -->
-
+    @endauth
 
 
 
@@ -61,7 +62,7 @@
             <div class="container-fluid mt-3">
                 <div class="row">
                     <div class="col-lg-6">
-                        <div class="card">
+                        <div class="card shadow-none border border-secondary">
                             <div class="card-header bg-dark text-white">
                                 Login
                             </div>

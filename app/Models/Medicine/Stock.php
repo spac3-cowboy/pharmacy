@@ -24,19 +24,23 @@ class Stock extends Model
 
     public static function inStockProducts(string $key = null, int $cat_id = null, int $vendor_id = null)
     {
-
         $stocks = [];
-        Stock::with(["medicine.category"])
+        $query = Stock::with(["medicine.category"])
                 ->whereDate("expiry_date", ">", Carbon::today()->toDateString())
                 ->where("quantity", ">",     0)
-                ->where("business_id", Auth::user()->owned_tenant->id)
-                ->whereHas("medicine", function($query) use($key, $cat_id, $vendor_id) {
+                ->where("business_id", Auth::user()->owned_tenant->id);
+				
+				if ( $vendor_id ) {
+					$query->where("vendor_id", $vendor_id);
+				}
+                $query->whereHas("medicine", function($query) use($key, $cat_id, $vendor_id) {
                     if ( $key ) {
                         $query->where("name", "like", "%$key%");
                     }
                     if ( $cat_id ) {
                         $query->where("category_id", $cat_id);
                     }
+                    
                 })
                 ->get()
                 ->unique("medicine_id")
@@ -50,6 +54,7 @@ class Stock extends Model
     {
         return Stock::whereDate("expiry_date", ">", Carbon::today()->toDateString())
                     ->where("quantity", "<", 1)
+                    ->where("business_id", Auth::user()->owned_tenant->id)
                     ->get();
     }
 
@@ -57,19 +62,22 @@ class Stock extends Model
     {
         return Stock::whereDate("expiry_date", ">", Carbon::today()->toDateString())
                 ->where("quantity", "<", 1)
+                ->where("business_id", Auth::user()->owned_tenant->id)
                 ->get();
     }
 
     public static function expiredStock(): \Illuminate\Support\Collection
     {
         return Stock::whereDate("expiry_date", "<", Carbon::today()->toDateString())
+                    ->where("business_id", Auth::user()->owned_tenant->id)
                     ->get();
     }
 
     public static function toBeExpired(): \Illuminate\Support\Collection
     {
         return Stock::whereDate("expiry_date", "<", Carbon::today()->subDays(7))
-                    ->get();
+                ->where("business_id", Auth::user()->owned_tenant->id)
+                ->get();
     }
 
     public function medicine()

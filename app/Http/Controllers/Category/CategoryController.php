@@ -18,14 +18,14 @@ class CategoryController extends Controller
     {
 
         if ( $request->ajax() ) {
-            $categories = Category::where("business_id", Auth::user()->tenant->id)->get();
+            $categories = Category::where("business_id", Auth::user()->owned_tenant->id)->get();
             return DataTables::of($categories)
                 ->addColumn('medicine', function ($category){
                     return $category->medicines->count();
                 })
                 ->addColumn('action', function ($category){
-                    $editUrl = route('medicines.edit', ['medicine' => $category->id] );
-                    $destroyRoute = route('medicines.destroy', ['medicine' => $category->id] );
+                    $editUrl = route('categories.edit', ['category' => $category->id] );
+                    $destroyRoute = route('categories.destroy', ['category' => $category->id] );
                     $csrf_token = csrf_token();
                     return "<a href=\"$editUrl\" class=\"action-icon\"> <i class=\"mdi mdi-square-edit-outline\"></i></a>
                             <form class=\"d-inline-block\" id=\"customer-delete-$category->id\" action=\"$destroyRoute\" method=\"post\">
@@ -58,7 +58,7 @@ class CategoryController extends Controller
         ]);
         Category::create([
             "name" => $request->name,
-            "business_id" => Auth::user()->tenant->id
+            "business_id" => Auth::user()->owned_tenant->id
         ]);
         return redirect()->route("categories.index")->with(["msg" => "Category Created Successfully"]);
     }
@@ -76,7 +76,8 @@ class CategoryController extends Controller
      */
     public function edit(string $id)
     {
-        //
+		
+        return view("ui.category.pages.EditCategory", [ "category" => Category::find($id) ]);
     }
 
     /**
@@ -84,7 +85,17 @@ class CategoryController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $request->validate([ "name" => "required|string" ]);
+		
+		$category = Category::find($id);
+		if ( $category ) {
+			$category->update([
+				"name" => $request->name
+			]);
+			
+			return redirect()->route("categories.index")->with(["msg" => "success"]);
+		}
+		return back()->withErrors(["msg" => "success"]);
     }
 
     /**

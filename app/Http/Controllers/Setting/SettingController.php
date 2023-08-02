@@ -61,7 +61,7 @@ class SettingController extends Controller
             "key" => "required",
             "value" => "required"
         ]);
-        $s = Setting::where("key", $request->key)->first();
+        $s = Setting::where("business_id", Auth::user()->owned_tenant->id)->where("key", $request->key)->first();
         if ( $s ) {
             $s->update([
                 "value" => $request->value

@@ -142,7 +142,7 @@ class ReportController extends Controller
         $from = date('Y-m-d', strtotime($request->from));
         $to = date('Y-m-d', strtotime($request->to));
 
-        $query = Purchase::where("business_id", Auth::user()->tenant->id);
+        $query = Purchase::where("business_id", Auth::user()->owned_tenant->id);
         if ( $request->exists("from") || $request->exists("to") ) {
             $query->whereBetween('created_at', [$from, $to]);
         }

@@ -20,7 +20,7 @@ class ManufacturerController extends Controller
     {
 
         if ( $request->ajax() ) {
-            $manufacturers = Manufacturer::where("business_id", Auth::user()->tenant->id)->get();
+            $manufacturers = Manufacturer::where("business_id", Auth::user()->owned_tenant->id)->get();
             return DataTables::of($manufacturers)
                 ->addColumn('medicine', function ($manufacturer){
                     return 0;
@@ -56,7 +56,7 @@ class ManufacturerController extends Controller
     public function store(CreateManufacturerRequest $request)
     {
         $data = $request->only("name", "phone", "email", "address");
-        $data["business_id"] = Auth::user()->tenant->id;
+        $data["business_id"] = Auth::user()->owned_tenant->id;
 
         Manufacturer::create($data);
 

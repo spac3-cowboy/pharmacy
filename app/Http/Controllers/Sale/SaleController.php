@@ -18,7 +18,7 @@ class SaleController extends Controller
     {
 
         if ( $request->ajax() ) {
-            $sales = Sale::where("business_id", Auth::user()->tenant->id)->get();
+            $sales = Sale::where("business_id", Auth::user()->owned_tenant->id)->get();
             return DataTables::of($sales)
                 ->addColumn("sale_id", function ($sale){
                     return "INV" . $sale->id;
@@ -49,17 +49,18 @@ class SaleController extends Controller
                     return "<a href=\"$viewInvoiceUrl\" class=\"btn btn-secondary text-white action-icon\"> <i class=\"uil uil-invoice\"></i></a>";
                 })
                 ->addColumn('action', function ($sale) {
+					return "";
                     $editUrl = route('sales.edit', [ 'sale' => $sale->id ] );
                     $destroyRoute = route('sales.destroy', [ 'sale' => $sale->id] );
                     $csrf_token = csrf_token();
-                    return "<a href=\"$editUrl\" class=\"action-icon\"> <i class=\"mdi mdi-square-edit-outline\"></i></a>
-                            <form class=\"d-inline-block\" id=\"customer-delete-$sale->id\" action=\"$destroyRoute\" method=\"post\">
+                    return "
+                           <form class=\"d-inline-block\" id=\"customer-delete-$sale->id\" action=\"$destroyRoute\" method=\"post\">
                                 <input type='hidden' name='_token' value='$csrf_token' >
                                 <input type=\"hidden\" name=\"id\" value=\"$sale->id\">
                                 <a href=\"javascript:void(0);\" onclick=\"deleteConfirm($sale->id)\" class=\"action-icon\"> <i class=\"mdi mdi-delete\"></i></a>
                             </form>";
                 })
-                ->rawColumns(["sale_id", "customer", "products", "qty", "total", "date", "invoice"])
+                ->rawColumns(["sale_id", "customer", "products", "qty", "total", "date", "invoice", "action"])
                 ->make();
         }
         return view("ui.sale.pages.PaginatedSalesList");

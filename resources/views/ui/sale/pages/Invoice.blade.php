@@ -1628,7 +1628,8 @@
             body.swal2-shown:not(.swal2-no-backdrop):not(.swal2-toast-shown) .swal2-container {
                 position: initial !important
             }
-        }</style>
+        }
+    </style>
 </head>
 <body>
 <div class="table-responsive">
@@ -1712,13 +1713,13 @@
                                     {{ $item->stock->medicine->name }}
                                 </td>
                                 <td class="text-center" style="vertical-align: top; font-size: 12px; text-align: center">
-                                    {{ $item->stock->quantity }}
+                                    {{ $item->quantity }}
                                 </td>
                                 <td class="text-right" style="vertical-align: top; font-size: 12px; text-align: center">
                                     {{ $item->stock->mrp }}
                                 </td>
                                 <td class="text-right" style="border-bottom: none;vertical-align: top;font-size: 12px;text-align: center ">
-                                    {{ $item->stock->mrp * $item->stock->quantity }}
+                                    {{ $item->stock->mrp * $item->quantity }}
                                 </td>
                             </tr>
                         @endforeach

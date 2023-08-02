@@ -91,11 +91,11 @@ class TenantContoller extends Controller
         });
 
         if ( $r ) {
-            return redirect()->back()->with([
+            return redirect()->route("tenants.index")->with([
                 "msg" => "New Tenant Created"
             ]);
         }
-        return redirect()->back()->withErrors([
+        return redirect()->route("tenants.index")->withErrors([
             "msg" => "Failed"
         ]);
     }

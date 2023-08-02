@@ -18,7 +18,7 @@ class UnitController extends Controller
     {
 
         if ( $request->ajax() ) {
-            $units = Unit::where("business_id", Auth::user()->owned_tenant->id);
+            $units = Unit::where("business_id", Auth::user()->owned_tenant->id)->get();
             return DataTables::of($units)
                 ->addColumn('action', function ($unit) {
                     $editUrl = route('units.edit', ['unit' => $unit->id] );
@@ -41,7 +41,7 @@ class UnitController extends Controller
      */
     public function create()
     {
-        //
+        return view("ui.unit.pages.CreateUnit");
     }
 
     /**
@@ -49,7 +49,12 @@ class UnitController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        Unit::create([
+            "name" => $request->get("name"),
+            "business_id" => Auth::user()->owned_tenant->id
+        ]);
+
+        return redirect()->route("units.index");
     }
 
     /**

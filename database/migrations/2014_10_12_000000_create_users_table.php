@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('phone')->unique();
             $table->string('address', 500)->nullable();
             $table->string('bg')->nullable(); // bg = blood group
+            $table->unsignedInteger('age')->nullable();
             $table->enum('user_type', [1,2,3,4])->default(2); // 1=super admin, 2=admin, 3=Doctor, 4=customer
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');

@@ -40,12 +40,21 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+	
+	
+	public function getRoleAttribute()
+	{
+		if ( $this->user_type == 1 ) return "Super Admin";
+		if ( $this->user_type == 2 ) return "Admin";
+		if ( $this->user_type == 3 ) return "doctor";
+		if ( $this->user_type == 4 ) return "customer";
+	}
 
 
     public static function customers()
     {
         return User::where("user_type", 4)
-                    ->where("business_id", Auth::user()->tenant->id)
+                    ->where("business_id", Auth::user()->owned_tenant->id)
                     ->get();
     }
 

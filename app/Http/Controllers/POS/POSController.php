@@ -11,6 +11,7 @@ use App\Models\Sale\Sale;
 use App\Models\Sale\SaleItem;
 use App\Models\Setting\Setting;
 use App\Models\User;
+use App\Models\Vendor\Vendor;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -23,8 +24,8 @@ class POSController extends Controller
      */
     public function index()
     {
-        $categories = Category::all();
-        $vendors = Category::all();
+        $categories = Category::where("business_id",  Auth::user()->owned_tenant->id)->get();
+        $vendors = Vendor::where("business_id",  Auth::user()->owned_tenant->id)->get();
         $stocks = Stock::inStockProducts();
         $customers = User::customers();
 //        dd($stocks);
@@ -250,7 +251,7 @@ class POSController extends Controller
     public function getPageData()
     {
         $categories = Category::where("business_id", Auth::user()->owned_tenant->id)->get();
-        $vendors = [];
+        $vendors = Vendor::where("business_id", Auth::user()->owned_tenant->id)->get();;
         $stocks = Stock::inStockProducts();
         $customers = User::customers();
 
@@ -322,7 +323,9 @@ class POSController extends Controller
 
         $vat_amount = $sub_total * (Setting::key("vat")/100) ;
 
-        $due = abs(round($grand_total - $request->paid));
+        $due = (round($grand_total - $request->paid));
+        // if paid more than billed amount
+        $due = $due < 0 ? 0 : $due;
         $paid = $request->paid;
 
 

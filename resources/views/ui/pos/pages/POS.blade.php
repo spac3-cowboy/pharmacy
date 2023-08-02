@@ -49,19 +49,19 @@
 
 
     <script type="text/javascript">
-        $(document).ready(function() {
-            $('#category').select2({
-                theme: "classic"
-            });
-        });
-        $(document).ready(function() {
-            $('#vendor').select2({
-                theme: "classic"
-            });
-        });
-        $(document).ready(function() {
-            $('#customer').select2();
-        });
+        // $(document).ready(function() {
+        //     $('#category').select2({
+        //         theme: "classic"
+        //     });
+        // });
+        // $(document).ready(function() {
+        //     $('#vendor').select2({
+        //         theme: "classic"
+        //     });
+        // });
+        // $(document).ready(function() {
+        //     $('#customer').select2();
+        // });
     </script>
 
     <script type="text/javascript">

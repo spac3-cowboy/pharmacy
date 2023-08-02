@@ -76,7 +76,7 @@ class StockController extends Controller
         $stocks = Stock::with(["medicine.category", "manufacturer"])
             ->whereDate("expiry_date", ">", Carbon::today()->toDateString())
             ->where("quantity", ">",     0)
-            ->where("business_id", Auth::user()->tenant->id)
+            ->where("business_id", Auth::user()->owned_tenant->id)
             ->whereHas("medicine", function($query) use($key, $cat_id, $vendor_id) {
                 if ( $key ) {
                     $query->where("name", "like", "%$key%");

@@ -58,6 +58,7 @@ function Left(props) {
             qparam += "&ven_id=" + ven_id
         }
 
+        console.log( ven_id )
 
         TurnOverlayOn();
         axios.get(`/dashboard/pos/search${qparam}`)
@@ -82,16 +83,16 @@ function Left(props) {
                     </span>
                     </div>
                     <div className="selectors">
-                        <select onChange={() => { search()  }} ref={catFilter} name="category" id="category" className="category">
-                            <option value="-1">Category</option>
+                        <select onChange={() => { search() }} ref={catFilter} name="category" id="category" className="category">
+                            <option value="-1">All Category</option>
                             {
                                 categories.map((category, i)=>{
                                     return <option key={i} value={category.id}>{category.name}</option>
                                 })
                             }
                         </select>
-                        <select name="vendor" id="vendor">
-                            <option onClick={()=>search()} ref={venFilter} value="-1">Select Vendor</option>
+                        <select onChange={()=>search()}  ref={venFilter} name="vendor" id="vendor">
+                            <option  value="-1">Select Vendor</option>
                             {
                                 vendors.map((vendor, i)=>{
                                     return <option key={i} value={vendor.id}>{vendor.name}</option>

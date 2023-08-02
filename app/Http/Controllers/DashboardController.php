@@ -7,6 +7,7 @@ use App\Models\Purchase\Purchase;
 use App\Models\Sale\Sale;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class DashboardController extends Controller
 {
@@ -19,10 +20,12 @@ class DashboardController extends Controller
         $stock_medicines = Stock::inStockProducts()->reduce(function ($total, $stock) {
             return $stock->quantity + $total;
         });
-        $sales = Sale::where("created_at", Carbon::today()->toDate())->get();
+        $sales = Sale::where("business_id", Auth::user()->owned_tenant->id)
+                 ->where("created_at", Carbon::today()->toDate())->get();
         $total_sales_amount = $sales->reduce(function ($total, $sale){ return $sale->grand_total + $total; });
 
-        $purchases = Purchase::where("created_at", Carbon::today()->toDate())->get();
+        $purchases = Purchase::where("business_id", Auth::user()->owned_tenant->id)
+                     ->where("created_at", Carbon::today()->toDate())->get();
         $total_purchase_amount = $purchases->reduce(function ($total, $purchase){ return $purchase->amount + $total; });
 
         $out_of_stocks = Stock::outOfStock();

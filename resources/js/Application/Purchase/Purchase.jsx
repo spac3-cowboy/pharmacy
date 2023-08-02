@@ -132,6 +132,7 @@ export default function Purchase() {
                 "buy_price" : document.querySelector(`#cm-${cm.id} #buy_price`).value,
                 "flat_discount" : document.querySelector(`#cm-${cm.id} #discount`).value,
                 "batch" : document.querySelector(`#cm-${cm.id} #batch`).value,
+                "vendor_id" : document.querySelector(`#cm-${cm.id} #vendor_id`).value,
             }
         });
 
@@ -143,11 +144,16 @@ export default function Purchase() {
             if (item.mrp <= 0) return true;
             if (item.buy_price <= 0) return true;
             if (item.flat_discount < 0) return true;
+            if ( item.vendor_id == 0 ) {
+                console.log(item.vendor_id)
+                return true;
+            }
 
             return false;
         });
 
         if ( allSet ) {
+            console.log("all not set")
             return;
         }
 
@@ -214,7 +220,7 @@ export default function Purchase() {
                                         }
                                     </select>
                                 </div>
-                                <div className="form-group col-6">
+                                <div className="form-group col-10">
                                     <label htmlFor="">Medicine</label>
                                     <select onChange={()=> selectMedicine() } className="form-select form-select-sm" aria-label="Default select example">
                                         <option selected>Select Medicine</option>
@@ -228,19 +234,6 @@ export default function Purchase() {
                                     </select>
                                 </div>
 
-                                <div className="form-group col-5 m-1">
-                                    <label htmlFor="">Vendor</label>
-                                    <select className="form-select form-select-sm" id="vendor_id">
-                                        <option selected>Select Vendor</option>
-                                        {
-                                            vendors.map((vendor,i) => {
-                                                return (
-                                                    <option key={i} className="" value={vendor.id}>{ vendor.name }</option>
-                                                )
-                                            })
-                                        }
-                                    </select>
-                                </div>
 
                                 <div className="col-lg-12 mt-3">
                                     <table className="table table-striped mb-0">
@@ -251,6 +244,7 @@ export default function Purchase() {
                                             <th>Batch</th>
                                             <th>Expiry Date</th>
                                             <th>Manu Date</th>
+                                            <th>Vendor</th>
                                             <th>MRP Per Unit</th>
                                             <th>Buy Price Per Unit</th>
                                             <th>Units</th>
@@ -275,6 +269,18 @@ export default function Purchase() {
                                                         </td>
                                                         <td className={"py-1"}>
                                                             <input className="form-control form-control-sm  p-1" type="date" id="expiry_date" name="expiry_date" />
+                                                        </td>
+                                                        <td>
+                                                            <select defaultValue={0} className="form-select form-select-sm" id="vendor_id" required>
+                                                                <option>Select Vendor</option>
+                                                                {
+                                                                    vendors.map((vendor,i) => {
+                                                                        return (
+                                                                            <option key={i} className="" value={vendor.id}>{ vendor.name }</option>
+                                                                        )
+                                                                    })
+                                                                }
+                                                            </select>
                                                         </td>
                                                         <td className={"py-1"}>
                                                             <input value={cm.mrp} onChange={ () => { changeMrp(cm.id); updateMedicineCalculations() } } className="form-control form-control-sm  p-1" type="number" id="mrp" name="mrp" />
