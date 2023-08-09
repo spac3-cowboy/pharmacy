@@ -27,6 +27,9 @@ return new class extends Migration
             $table->unsignedDouble("cost");
             $table->boolean("emergency")->default(false);
             $table->timestamps();
+	
+	
+	        $table->softDeletes();
         });
     }
 

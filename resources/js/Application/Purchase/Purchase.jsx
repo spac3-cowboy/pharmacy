@@ -1,5 +1,6 @@
 import {useEffect, useState} from "react";
 import Swal from "sweetalert2";
+import Select from 'react-select'
 
 export default function Purchase() {
     const [ medicines, setMedicines ] = useState([]);
@@ -19,14 +20,15 @@ export default function Purchase() {
         axios.get("/dashboard/purchase/get-page-data")
             .then(response => response.data)
             .then(data => {
-                console.log(data)
                 if ( data.msg == "success" ) {
                     setMedicines(data.medicines);
                     setManufacturers(data.manufacturers);
                     setVendors(data.vendors);
+                    setFilteredMedicines(data.medicines);
                 }
             });
     },[]);
+
 
     const removeFromCartMedicines = (cmid) => {
         let t = cartMedicines.filter(cm=>{
@@ -35,16 +37,22 @@ export default function Purchase() {
         setCartMedicines(t);
     }
 
-    const selectMedicine = () => {
-        let mid = window.event.target.value
+    const selectMedicine = (e) => {
+        let mid = e.value
+        console.log(mid);
         // if already in cart
         let inCart = cartMedicines.find(m => {
             return m.id == mid
         });
+
         if ( inCart ) return;
         let tmp = medicines.find( m => {
             return m.id == mid
         });
+        if ( !tmp ) {
+            console.log(medicines, manufacturers, vendors)
+            return
+        };
         tmp["subtotal"] = 0;
         tmp["discount"] = 0;
         tmp["total"] = 0;
@@ -55,6 +63,9 @@ export default function Purchase() {
         tmp["buy_price"] = 0;
         tmp["batch"] = "";
         setCartMedicines( [...cartMedicines, tmp] );
+
+        console.log(mid);
+        return;
     }
     const changeMrp = (mid) => {
         let tmp = cartMedicines.map(cm => {
@@ -98,7 +109,6 @@ export default function Purchase() {
         setCartMedicines(tmpCartMedicines);
         calculateAllTotal();
     }
-
     const calculateAllTotal = () => {
         let tmpSubtotal = cartMedicines.reduce((total, cm) => {
             return ((cm.mrp * cm.quantity) - cm.discount) + total;
@@ -118,7 +128,6 @@ export default function Purchase() {
         setPiad(tmpPaid);
         setDue(tmpDue);
     }
-
     const submit = () => {
 
 
@@ -190,6 +199,19 @@ export default function Purchase() {
         })
     }
 
+    const filterByManufacturer = (e) => {
+        let manufacturer_id = e.value;
+        if ( e.value == -1 ) {
+            setFilteredMedicines( medicines );
+            return;
+        }
+        setFilteredMedicines(
+            medicines.filter(medicine=>{
+                return medicine.manufacturer_id == manufacturer_id
+            })
+        )
+    }
+
     return (
         <div className="row">
             <div className="col-12">
@@ -209,48 +231,68 @@ export default function Purchase() {
                                 </div>
                                 <div className="form-group col-5 m-1">
                                     <label htmlFor="">Manufacturer</label>
-                                    <select className="form-select form-select-sm" aria-label="Default select example">
-                                        <option selected>Select Manufacturer</option>
-                                        {
-                                            manufacturers.map((manufacturer,i)=>{
-                                                return (
-                                                    <option key={i} className="">{ manufacturer.name }</option>
-                                                )
-                                            })
-                                        }
-                                    </select>
+                                    <div className="d-flex">
+                                        {/*<select className="form-select form-select-sm " aria-label="Default select example">*/}
+                                        {/*    <option selected>Select Manufacturer</option>*/}
+                                        {/*    {*/}
+                                        {/*        manufacturers.map((manufacturer,i)=>{*/}
+                                        {/*            return (*/}
+                                        {/*                <option key={i} className="">{ manufacturer.name }</option>*/}
+                                        {/*            )*/}
+                                        {/*        })*/}
+                                        {/*    }*/}
+                                        {/*</select>*/}
+                                        <Select
+                                            id="manufacturers"
+                                            placeholder={"Select Manufacturer"}
+                                            className="w-100"
+                                            options={ manufacturers.map(m => { return { value: m.id, label: m.name } }) }
+                                            onChange={ filterByManufacturer }
+                                        />
+                                    </div>
                                 </div>
                                 <div className="form-group col-10">
                                     <label htmlFor="">Medicine</label>
-                                    <select onChange={()=> selectMedicine() } className="form-select form-select-sm" aria-label="Default select example">
-                                        <option selected>Select Medicine</option>
-                                        {
-                                            medicines.map((medicine,i)=>{
-                                                return (
-                                                    <option key={i} value={ medicine.id } className="">{ medicine.name }</option>
-                                                )
-                                            })
-                                        }
-                                    </select>
+                                    <div className="d-flex">
+                                        <Select
+                                            id="medicines"
+                                            className="w-75"
+                                            options={ filteredMedicines.map(m => { return { value: m.id, label: m.name } }) }
+                                            onChange={ selectMedicine }
+                                        />
+                                        {/*<select id="medicines" onChange={ () => selectMedicine() } className="form-select form-select-sm" aria-label="Default select example ">*/}
+                                        {/*    <option selected>Select Medicine</option>*/}
+                                        {/*    {*/}
+                                        {/*        medicines.map((medicine,i)=>{*/}
+                                        {/*            return (*/}
+                                        {/*                <option key={i} value={ medicine.id } className="">{ medicine.name }</option>*/}
+                                        {/*            )*/}
+                                        {/*        })*/}
+                                        {/*    }*/}
+                                        {/*</select>*/}
+                                        <button className="btn btn-success mx-2 w-25" style={{ maxHeight: "50px", minWidth: "140px" }}>
+                                            Add New
+                                        </button>
+                                    </div>
                                 </div>
 
 
-                                <div className="col-lg-12 mt-3">
+                                <div className="col-lg-12 mt-3" style={{ overflowX: "auto" }}>
                                     <table className="table table-striped mb-0">
                                         <thead className="bg-dark text-white">
                                         <tr>
                                             <th>#</th>
                                             <th>Name</th>
-                                            <th>Batch</th>
-                                            <th>Expiry Date</th>
-                                            <th>Manu Date</th>
-                                            <th>Vendor</th>
-                                            <th>MRP Per Unit</th>
-                                            <th>Buy Price Per Unit</th>
-                                            <th>Units</th>
-                                            <th>Subtotal</th>
-                                            <th>Discount</th>
-                                            <th>Total</th>
+                                            <th style={{ minWidth: "200px" }}>Batch</th>
+                                            <th style={{ minWidth: "150px" }}>Expiry Date</th>
+                                            <th style={{ minWidth: "150px" }}>Manu Date</th>
+                                            <th style={{ minWidth: "200px" }}>Vendor</th>
+                                            <th style={{ minWidth: "150px" }}>MRP Per Unit</th>
+                                            <th style={{ minWidth: "150px" }}>Buy Price Per Unit</th>
+                                            <th style={{ minWidth: "150px" }}>Units</th>
+                                            <th style={{ minWidth: "150px" }}>Subtotal</th>
+                                            <th style={{ minWidth: "150px" }}>Discount</th>
+                                            <th style={{ minWidth: "150px" }}>Total</th>
                                             <th>-</th>
                                         </tr>
                                         </thead>
@@ -319,8 +361,8 @@ export default function Purchase() {
 
             <div className="col-12 d-flex justify-content-end">
                 <div className="card w-25 shadow-none">
-                    <div className="card-body p-0 border">
-                        <table className="table mb-0">
+                    <div className="card-body p-0 border"  style={{ overflowX: "auto" }}>
+                        <table className="table mb-0"  style={{ overflowX: "auto" }}>
                             <tbody>
                             <tr>
                                 <td className="py-1">Sub Total</td>

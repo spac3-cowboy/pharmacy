@@ -21,6 +21,9 @@ return new class extends Migration
             $table->double("payable")->default(0);
             $table->string("address")->nullable();
             $table->timestamps();
+	
+	
+	        $table->softDeletes();
         });
     }
 

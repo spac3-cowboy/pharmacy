@@ -5,7 +5,7 @@ import Swal from 'sweetalert2'
 export default function CartTable(props) {
     // let [cart, setCart] = useState([]);
 
-    let { carts, setCarts } = props
+    let { carts, setCarts, recalculate } = props
     useEffect(() => {
         console.log(carts)
         // fetch the card
@@ -93,6 +93,7 @@ export default function CartTable(props) {
                     title: 'Max Limit Reached For The Product'
                 })
             }
+            recalculate()
         });
     }
     const decreaseQuantity = (cart_id, batch) => {
@@ -110,6 +111,7 @@ export default function CartTable(props) {
 
             }
         });
+        recalculate()
     }
 
     const setDiscount = (cart_id) => {

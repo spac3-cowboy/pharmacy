@@ -19,6 +19,9 @@ return new class extends Migration
             $table->string("email");
             $table->unsignedBigInteger("business_id");
             $table->timestamps();
+	
+	
+	        $table->softDeletes();
         });
     }
 

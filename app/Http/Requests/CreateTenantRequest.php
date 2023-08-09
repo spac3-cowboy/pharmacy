@@ -31,7 +31,8 @@ class CreateTenantRequest extends FormRequest
             "tenant_name" => "required|string",
             "tenant_address" => "required|string",
             "tenant_email" => "required|string",
-            "tenant_phone" => "required|string"
+            "tenant_phone" => "required|string",
+	        "tenant_image" => "file|required"
         ];
     }
 }

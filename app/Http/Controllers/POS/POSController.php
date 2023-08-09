@@ -277,7 +277,7 @@ class POSController extends Controller
             "stocks" => $stocks,
             "customers" => $customers,
             "carts" => $carts,
-            "vat" => 15,
+            "vat" => Setting::key("vat") ?? 0,
         ];
     }
 
@@ -302,9 +302,9 @@ class POSController extends Controller
             $customer_id = null;
         }
         $carts = Cart::with(["stock"])
-                ->where("business_id", Auth::user()->owned_tenant->id)
-                ->get();
-//        return $carts;
+	                 ->where("business_id", Auth::user()->owned_tenant->id)
+	                 ->get();
+		
         $total_quantity = $carts->reduce(function ($total, $cart) {
             return $total + $cart->quantity;
         });
@@ -314,10 +314,17 @@ class POSController extends Controller
             return $total + $tmp;
         });
         $flat_discount = $request->discount;
-
+	
+	    $vat = Setting::key("vat") ?? 0;
+		
         // adding vat
-        $grand_total = ($sub_total * ( 1 + (Setting::key("vat")/100) ));
-
+	    if ( $vat != 0 ) {
+            $grand_total = ($sub_total * ( 1 + ( $vat / 100 ) ));
+	    } else {
+	        $grand_total = $sub_total;
+	    }
+			
+		
         // subtracting flat discount
         $grand_total = $grand_total - $flat_discount;
 
@@ -343,11 +350,14 @@ class POSController extends Controller
             ]);
 
             $carts->each(function ($cart) use($sale){
+	            $tmp = ($cart->quantity * $cart->stock->mrp);
+	            $total = $tmp - ( $tmp * ($cart->discount/100) );
                 SaleItem::create([
                     "sale_id" => $sale->id,
                     "stock_id" => $cart->stock->id,
                     "quantity" => $cart->quantity,
                     "discount" => $cart->discount,
+					"total" => $total,
                     "business_id" => Auth::user()->owned_tenant->id
                 ]);
             });
@@ -360,10 +370,10 @@ class POSController extends Controller
             });
 
             Cart::where("business_id", Auth::user()->owned_tenant->id)
-                ->get()
-                ->each(function ($cart){
-                    $cart->delete();
-                });
+	                ->get()
+	                ->each(function ($cart){
+	                    $cart->delete();
+	                });
 
             return $sale;
         });

@@ -21,6 +21,9 @@ return new class extends Migration
             $table->string("batch")->nullable();
 
             $table->timestamps();
+	
+	
+	        $table->softDeletes();
         });
     }
 

@@ -20,21 +20,27 @@ return new class extends Migration
             $table->unsignedDouble("flat_discount")->default(0);
             $table->unsignedDouble("vat_amount")->default(0);
             $table->unsignedDouble("paid");
+            $table->enum("status", ["delivered", "partially returned", "full returned"])->default("delivered");
             $table->unsignedDouble("due")->default(0);
             $table->unsignedBigInteger("customer_id")->nullable();
-
+	
+	        $table->softDeletes();
             $table->timestamps();
         });
 
         Schema::create('sale_items', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('business_id');
-            $table->unsignedInteger("quantity");
-            $table->unsignedInteger("discount")->default(0);
             $table->unsignedBigInteger("sale_id");
+            $table->unsignedInteger("quantity");
+            $table->unsignedInteger("discount")->default(0); // in %
             $table->unsignedBigInteger("stock_id");
+            $table->unsignedDouble("total");
 
             $table->timestamps();
+	
+	
+	        $table->softDeletes();
         });
     }
 

@@ -1805,11 +1805,9 @@
             --------------------------------------------------------
 
             <section style="font-size: 12px; line-height: 1.222; text-align: center; padding-top: 0px">
-                <span style="display: block; font-weight: 700;">Thank you for choosing us!</span>
-                <span style="display: block; font-weight: 700;">
-                    Powered By <span style="text-decoration:underline">{{ App\Models\Setting\Setting::key("app_name") }}</span>
+                <span>
+                    {!!  \App\Models\Setting\Setting::key("invoice-bottom-text") !!}
                 </span>
-{{--                <span style="display: block;">Software Developed By Ayaantech Limited. www.ayaantec.com</span>--}}
             </section>
 
         </section>

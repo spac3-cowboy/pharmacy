@@ -255,7 +255,7 @@ class ReportController extends Controller
             }
 
             $medicines = $query->get();
-            $medicines =    $medicines->map(function ($si) {
+            $medicines = $medicines->map(function ($si) {
                                 $si->stock->medicine["grand_total"] = $si->sale->grand_total;
                                 return $si->stock->medicine;
                             })
@@ -265,34 +265,28 @@ class ReportController extends Controller
                                 $si[0]["sold_amount"] = $si[0]->grand_total;
                                 return $si[0];
                             });
-            $total_sale_amount = $medicines->reduce(function ($total, $medicine){
-                return $medicine->sold_amount + $total;
-            }) . $currency_symbol;
+            $sold_amount = $medicines->reduce(function ($total, $medicine) {
+				                return $medicine->sold_amount + $total;
+				            }) . $currency_symbol;
 
             return DataTables::of($medicines)
-                ->addColumn('sales', function ($medicine) {
-                    return $medicine->sale;
-                })
-                ->addColumn('sold_amount', function ($medicine) use($currency_symbol) {
-                    return $medicine->sold_amount . $currency_symbol;
-                })
-                ->addColumn('category', function ($medicine){
-                    return $medicine->category->name;
-                })
-                ->addColumn('manufacturer', function ($medicine){
-                    return $medicine->manufacturer->name;
-                })
-                ->addColumn('image', function ($medicine){
-                    return "<img src='/$medicine->image' alt='Thumbnail'>";
-                })
-                ->rawColumns(['image', 'sales', 'sold_amount', 'category', 'manufacturer'])
-                ->with([
-                    "total_sale_amount" => $total_sale_amount
-                ])
-                ->make();
+	                ->addColumn('date', function ($medicine) {
+	                    return $medicine->sale;
+	                })
+	                ->addColumn('purchase_amount', function ($medicine) use($currency_symbol) {
+	                    return $medicine->sold_amount . $currency_symbol;
+	                })
+	                ->addColumn('sold_amount', function ($medicine) use($currency_symbol) {
+	                    return $medicine->sold_amount . $currency_symbol;
+	                })
+	                ->rawColumns(['month', 'sold_amount', 'purchase_amount'])
+	                ->with([
+	                    "sold_amount" => $sold_amount
+	                ])
+	                ->make();
         }
 
-        return view("ui.report.pages.PaginatedTopSoldMedicineReport");
+        return view("ui.report.pages.PaginatedProfitReport");
     }
 
 }

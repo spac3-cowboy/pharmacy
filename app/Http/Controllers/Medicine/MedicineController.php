@@ -73,8 +73,10 @@ class MedicineController extends Controller
      */
     public function store(CreateMedicineRequest $request)
     {
+//		dd($request->all());
         $data = $request->except(["_token", "batch"]);
         $data["business_id"] = Auth::user()->owned_tenant->id;
+		
 		$file = $request->file("image");
 	    $destinationPath = 'medicines';
 		$filename = Str::uuid() .".".  $file->getClientOriginalExtension();
@@ -83,8 +85,9 @@ class MedicineController extends Controller
 	    $data["business_id"] = Auth::user()->owned_tenant->id;
 	    $data["image"] = $filename;
 	
+		
 	    try {
-            Medicine::create($data);
+			Medicine::create($data);
 	    } catch (\Exception $exception) {
 		    return redirect()->route("medicines.index")->withErrors(["msg" => "Medicine Created Successfully"]);
 	    }
@@ -99,7 +102,16 @@ class MedicineController extends Controller
      */
     public function show(string $id)
     {
-        //
+		if ( \request() ->ajax() ) {
+			$medicine = Medicine::with(["stocks"])
+						->where("id", $id)
+						->first();
+			return  [ "medicine" => $medicine ];
+		}
+        $medicine = Medicine::find($id);
+		return view("ui.medicine.pages.ShowMedicine", [
+			"medicine" => $medicine
+		]);
     }
 
     /**

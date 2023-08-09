@@ -61,9 +61,60 @@
                     </tbody>
                 </table>
             </div>
-            <div class="col-lg-7 border p-2 shadow-none bg-white d-flex align-items-center flex-column">
-
+            <div class="col-lg-7 p-2 shadow-none bg-white d-flex align-items-center flex-column">
+                <table class="table table-centered w-100 dt-responsive nowrap" id="sales-datatable">
+                    <thead class="table-light">
+                    <tr>
+                        <th class="all">#</th>
+                        <th>Sale ID</th>
+                        <th>Products</th>
+                        <th>Total Qty.</th>
+                        <th>Total Cost</th>
+                        <th>Date</th>
+                        <th>Invoice</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
 </div>
+
+
+@section("scripts")
+<!-- Datatable js -->
+<script src="{{ asset('assets/vendor/datatables.net/js/jquery.dataTables.min.js') }}"></script>
+<script src="{{ asset('assets/vendor/datatables.net-bs5/js/dataTables.bootstrap5.min.js') }}"></script>
+<script src="{{ asset('assets/vendor/datatables.net-responsive/js/dataTables.responsive.min.js') }}"></script>
+<script src="{{ asset('assets/vendor/datatables.net-responsive-bs5/js/responsive.bootstrap5.min.js') }}"></script>
+<script src="{{ asset('assets/vendor/jquery-datatables-checkboxes/js/dataTables.checkboxes.min.js') }}"></script>
+
+
+<script>
+	$(document).ready(function() {
+		$('#sales-datatable').DataTable({
+			processing: true,
+			serverSide: true,
+			ajax: "{{ route('customers.show', [ 'customer' => $customer->id ]) }}",
+			columns: [
+				{ data: 'id', name: 'id' },
+				{ data: 'sale_id', name: 'sale_id' },
+				{ data: 'products', name: 'products' },
+				{ data: 'qty', name: 'qty' },
+				{ data: 'grand_total', name: 'grand_total' },
+				{ data: 'date', name: 'date' },
+				{ data: 'invoice', name: 'invoice' }
+				// { data: 'action', name: 'action', orderable: false, searchable: false },
+			]
+		});
+	});
+</script>
+@endsection
+
+@section("styles")
+    <!-- Datatable css -->
+    <link href="{{ asset('assets/vendor/datatables.net-bs5/css/dataTables.bootstrap5.min.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ asset('assets/vendor/datatables.net-responsive-bs5/css/responsive.bootstrap5.min.css') }}" rel="stylesheet" type="text/css" />
+@endsection

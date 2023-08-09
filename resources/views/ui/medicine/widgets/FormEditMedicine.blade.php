@@ -107,7 +107,7 @@
 
                         <div class="form-group col-12 mt-3 text-end">
                         <button type="submit" class="btn btn-primary me-1 waves-effect waves-float waves-light">Submit</button>
-                        <button type="reset" class="btn btn-outline-secondary waves-effect">Reset</button>
+                        <a href="{{ route("medicines.index") }}" class="btn btn-success waves-effect">Cancel</a>
                     </div>
                     </div>
                 </form>

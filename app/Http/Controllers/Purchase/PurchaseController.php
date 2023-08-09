@@ -184,6 +184,7 @@ class PurchaseController extends Controller
         $vendors = Vendor::where("business_id", Auth::user()->owned_tenant->id)->get();
         $medicines = Medicine::with(["manufacturer"])
                      ->where("business_id", Auth::user()->owned_tenant->id)
+//	                 ->orWhere("globally_visible", true)
                      ->get();
         return [
             "msg" => "success",
@@ -192,4 +193,5 @@ class PurchaseController extends Controller
             "medicines" => $medicines
         ];
     }
+	
 }

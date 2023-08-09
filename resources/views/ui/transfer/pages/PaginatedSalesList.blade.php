@@ -2,15 +2,15 @@
 
 
 
-@section("title", "In Stock")
+@section("title", "Sales")
 
 @section("main")
     <div class="card shadow-none border">
         <div class="card-header bg-pitla-blue d-flex justify-content-between">
-            <span>Out Of Stock Medicine List</span>
+            <span>Transfer History</span>
         </div>
         <div class="card-body p-1 bordered">
-            @include("ui.stock.widgets.TablePaginatedOutOfStock")
+            @include("ui.transfer.widgets.TablePaginatedTransferList")
         </div>
     </div>
 @endsection

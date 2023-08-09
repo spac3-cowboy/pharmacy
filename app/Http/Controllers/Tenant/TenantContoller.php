@@ -10,11 +10,14 @@ use App\Models\Medicine\Medicine;
 use App\Models\Medicine\Stock;
 use App\Models\Purchase\Purchase;
 use App\Models\Sale\Sale;
+use App\Models\Setting\Setting;
 use App\Models\Tenant\Tenant;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 use Yajra\DataTables\DataTables;
 
 class TenantContoller extends Controller
@@ -87,6 +90,18 @@ class TenantContoller extends Controller
             $tenantData["user_id"] = $user->id;
 
             Tenant::create($tenantData);
+			
+	        $file = $request->file("tenant_image");
+	        $destinationPath = 'assets/images/';
+	        $filename = Str::random() .".".  $file->getClientOriginalExtension();
+	        $file->move($destinationPath, $filename);
+			
+			Setting::create([
+				"business_id" => Auth::user()->owned_tenant->id,
+				"key" => "logo",
+				"value" => $filename
+			]);
+			
             return true;
         });
 

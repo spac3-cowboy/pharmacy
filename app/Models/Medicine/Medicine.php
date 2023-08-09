@@ -12,7 +12,7 @@ class Medicine extends Model
 {
     use HasFactory, SoftDeletes;
     protected $guarded = [];
-
+	
     public function category()
     {
         return $this->belongsTo(Category::class);
@@ -26,4 +26,9 @@ class Medicine extends Model
     {
         return $this->hasMany(Stock::class);
     }
+	
+	public function unit()
+	{
+		return $this->belongsTo(Unit::class);
+	}
 }

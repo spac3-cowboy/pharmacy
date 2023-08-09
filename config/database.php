@@ -62,6 +62,31 @@ return [
                 PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
             ]) : [],
         ],
+	    
+	    'pharmacy' => [
+		    'driver' => 'mysql',
+		    'url' => env('DATABASE_URL'),
+		    'host' => env('DB_HOST', '127.0.0.1'),
+		    'port' => env('DB_PORT', '3306'),
+		    'database' => "pharmacy",
+		    'username' => "shuvo",
+		    'password' => "Alpha@123",
+		    'unix_socket' => env('DB_SOCKET', ''),
+		    'charset' => 'utf8mb4',
+		    'collation' => 'utf8mb4_unicode_ci',
+	    ],
+	    'medx' => [
+		    'driver' => 'mysql',
+		    'url' => env('DATABASE_URL'),
+		    'host' => env('DB_HOST', '127.0.0.1'),
+		    'port' => env('DB_PORT', '3306'),
+		    'database' => "medx",
+		    'username' => "shuvo",
+		    'password' => "Alpha@123",
+		    'unix_socket' => env('DB_SOCKET', ''),
+		    'charset' => 'utf8mb4',
+		    'collation' => 'utf8mb4_unicode_ci',
+	    ],
 
         'pgsql' => [
             'driver' => 'pgsql',

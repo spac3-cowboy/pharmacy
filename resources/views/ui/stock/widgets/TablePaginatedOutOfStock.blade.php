@@ -3,20 +3,20 @@
         <thead class="table-light">
             <tr>
                 <th class="all">#</th>
-                <th>Batch</th>
-                <th title="Available Quantity">Avl. Qty</th>
                 <th>Name</th>
-                <th>Generic Name</th>
-                <th>Shelf</th>
+                <th>Manufacturer</th>
+                <th>Batch</th>
                 <th>Buy Price</th>
                 <th>Selling Price</th>
+                <th>Cost</th>
+                <th title="Available Quantity">Avl. Qty</th>
+                <th>Generic Name</th>
+                <th>Shelf</th>
                 <th>Strength</th>
-                <th>Category</th>
                 <th>Purchase Date</th>
+                <th>Emergency</th>
                 <th>Manufacturing Date</th>
                 <th>Expiry Date</th>
-                <th>Cost</th>
-                <th>Manufacturer</th>
             </tr>
         </thead>
         <tbody>
@@ -32,15 +32,6 @@
 
 
 @section("scripts")
-    <!-- Datatable js -->
-    <script src="{{ asset('assets/vendor/datatables.net/js/jquery.dataTables.min.js') }}"></script>
-    <script src="{{ asset('assets/vendor/datatables.net-bs5/js/dataTables.bootstrap5.min.js') }}"></script>
-    <script src="{{ asset('assets/vendor/datatables.net-responsive/js/dataTables.responsive.min.js') }}"></script>
-    <script src="{{ asset('assets/vendor/datatables.net-responsive-bs5/js/responsive.bootstrap5.min.js') }}"></script>
-    <script src="{{ asset('assets/vendor/jquery-datatables-checkboxes/js/dataTables.checkboxes.min.js') }}"></script>
-
-    <!-- Product Demo App js -->
-    {{--    <script src="{{ asset('assets/js/pages/demo.products.js') }}"></script>--}}
 
     <script type="text/javascript">
         const deleteConfirm = (mid) => {
@@ -62,24 +53,65 @@
 
         $(document).ready(function() {
             $('#stocks-datatable').DataTable({
+	            dom: 'Blfrtip',
+	            buttons: [
+		            {
+			            extend: 'pdfHtml5',
+			            text: 'PDF',
+			            exportOptions: {
+				            modifier: {
+					            page: 'current'
+				            }
+			            }
+		            },
+		            {
+			            extend: 'csvHtml5',
+			            text: 'CSV',
+			            exportOptions: {
+				            modifier: {
+					            page: 'current'
+				            }
+			            }
+		            },
+		            {
+			            extend: 'copyHtml5',
+			            text: 'Copy',
+			            exportOptions: {
+				            modifier: {
+					            page: 'current'
+				            }
+			            }
+		            },
+		            {
+			            extend: 'excelHtml5',
+			            text: 'EXCEL',
+			            exportOptions: {
+				            modifier: {
+					            page: 'current'
+				            }
+			            }
+		            },
+
+	            ],
                 processing: true,
                 serverSide: true,
                 ajax: "{{ route('stocks.outofstock') }}",
                 columns: [
-                    { data: 'id', name: 'id' },
-                    { data: 'batch', name: 'batch' },
-                    { data: 'avl_qty', name: 'avl_qty' },
-                    { data: 'name', name: 'name' },
-                    { data: 'generic_name', name: 'generic_name' },
-                    { data: 'shelf', name: 'shelf' },
-                    { data: 'buy_price', name: 'buy_price' },
-                    { data: 'price', name: 'price' },
-                    { data: 'strength', name: 'strength' },
-                    { data: 'purchase_date', name: 'purchase_date' },
-                    { data: 'manufacturer', name: 'manufacturer' },
-                    { data: 'manufacturing_date', name: 'manufacturing_date' },
-                    { data: 'expiry_date', name: 'expiry_date' },
-                    { data: 'cost', name: 'cost' },
+	                { data: 'id', name: 'id' },
+	                { data: 'name', name: 'name' },
+	                { data: 'manufacturer', name: 'manufacturer' },
+	                { data: 'batch', name: 'batch' },
+	                { data: 'buy_price', name: 'buy_price' },
+	                { data: 'price', name: 'price' },
+	                { data: 'cost', name: 'cost' },
+	                { data: 'avl_qty', name: 'avl_qty' },
+	                { data: 'generic_name', name: 'generic_name' },
+	                { data: 'shelf', name: 'shelf' },
+	                { data: 'strength', name: 'strength' },
+	                { data: 'purchase_date', name: 'purchase_date' },
+	                { data: 'emergency', name: 'emergency   ' },
+	                { data: 'manufacturing_date', name: 'manufacturing_date' },
+	                { data: 'expiry_date', name: 'expiry_date' }
                     // { data: 'action', name: 'action', orderable: false, searchable: false },
                 ]
             });

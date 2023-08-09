@@ -11,9 +11,11 @@ use App\Http\Controllers\Medicine\UnitController;
 use App\Http\Controllers\POS\POSController;
 use App\Http\Controllers\Purchase\PurchaseController;
 use App\Http\Controllers\Report\ReportController;
+use App\Http\Controllers\Return\ReturnController;
 use App\Http\Controllers\Sale\SaleController;
 use App\Http\Controllers\Setting\SettingController;
 use App\Http\Controllers\Tenant\TenantContoller;
+use App\Http\Controllers\Transfer\TransferController;
 use App\Http\Controllers\Vendor\VendorController;
 use Illuminate\Support\Facades\Route;
 
@@ -27,6 +29,10 @@ use Illuminate\Support\Facades\Route;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
+
+Route::get("/uid", function (){
+	dd(\Illuminate\Support\Facades\Auth::user()->owned_tenant->id);
+});
 
 
 Route::get("/login", [AuthController::class, "loginPage"])->name("auth.login");
@@ -63,6 +69,12 @@ Route::group(["prefix" => "dashboard", "middleware" => ["auth"]], function (){
     Route::get('stock/emergency-stock', [StockController::class, "emergencyStock"])->name("stocks.emergencystock");
     Route::get('stock/expired-stock', [StockController::class, "expiredStock"])->name("stocks.expiredstock");
     Route::get('stock/to-be-expired', [StockController::class, "toBeExpired"])->name("stocks.tobeexpired");
+    Route::get('stock/transfer', [StockController::class, "transfers"])->name("stocks.transfers");
+	
+	// Transfer
+	Route::get('transfer/index', [TransferController::class, "index"])->name("transfers.index");
+	Route::get('transfer/create', [TransferController::class, "create"])->name("transfers.create");
+    Route::post('transfer/store', [TransferController::class, "store"])->name("transfers.store");
 
     // purchase
     Route::get('purchase', [PurchaseController::class, "index"])->name("purchases.index");
@@ -73,9 +85,19 @@ Route::group(["prefix" => "dashboard", "middleware" => ["auth"]], function (){
     Route::post('purchase/destroy', [PurchaseController::class, "destroy"])->name("purchases.destroy");
     Route::get('purchase/get-page-data', [PurchaseController::class, "getPageData"])->name("purchases.store");
 
+	// Sales
+    Route::get("sales/bulk", [SaleController::class, "bulk"])->name("sales.bulk");
+    Route::post("sales/bulk", [SaleController::class, "bulkSale"])->name("sales.bulk.post");
     Route::resource("sales", SaleController::class);
     Route::get("sales/{sale}/invoice", [SaleController::class, "invoice"])->name("sales.invoice");
 
+	// Returns
+	Route::get("/return", [ReturnController::class, "index"])->name("returns.index");
+	Route::get("/return/search-medicine", [ReturnController::class, "searchMedicine"])->name("returns.search.medicine");
+	Route::get("/return/search-manufacturer", [ReturnController::class, "searchManufacturer"])->name("returns.search.manufacturer");
+	Route::get("/return/create", [ReturnController::class, "create"])->name("returns.create");
+	Route::post("/return/medicine", [ReturnController::class, "returnMedicine"])->name("returns.medicine");
+	
     // business routes
     Route::resource("tenants", TenantContoller::class);
 

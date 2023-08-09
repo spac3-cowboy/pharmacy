@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Setting\Setting;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 
 class SettingController extends Controller
 {
@@ -14,7 +15,7 @@ class SettingController extends Controller
      */
     public function index()
     {
-        $settings = Setting::where("business_id", Auth::user()->tenant->id)->get();
+        $settings = Setting::where("business_id", Auth::user()->owned_tenant->id)->get();
         return view("ui.settings.pages.Settings", [
             "settings" => $settings
         ]);
@@ -57,6 +58,9 @@ class SettingController extends Controller
      */
     public function update(Request $request)
     {
+		if ($request->get("key") == "logo" ) {
+			return $this->updateLogo($request);
+		}
         $request->validate([
             "key" => "required",
             "value" => "required"
@@ -85,4 +89,21 @@ class SettingController extends Controller
     {
         //
     }
+	
+	private function updateLogo($request): array
+	{
+		$file = $request->file("image");
+		$destinationPath = 'assets/images/';
+		$filename = Str::random() .".".  $file->getClientOriginalExtension();
+		$file->move($destinationPath, $filename);
+		$setting = Setting::where("key", "logo")
+							 ->where("business_id", Auth::user()->owned_tenant->id)
+							 ->first();
+		if ( $setting ) {
+			$setting->update([
+				"value" => $filename
+			]);
+		}
+		return [ "msg" => "success" ];
+	}
 }

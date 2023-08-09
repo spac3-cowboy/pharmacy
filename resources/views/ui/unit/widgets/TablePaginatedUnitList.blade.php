@@ -6,6 +6,7 @@
                     #
                 </th>
                 <th>Name</th>
+                <th>Medicines</th>
                 <th>Action</th>
             </tr>
         </thead>
@@ -22,15 +23,6 @@
 
 
 @section("scripts")
-    <!-- Datatable js -->
-    <script src="{{ asset('assets/vendor/datatables.net/js/jquery.dataTables.min.js') }}"></script>
-    <script src="{{ asset('assets/vendor/datatables.net-bs5/js/dataTables.bootstrap5.min.js') }}"></script>
-    <script src="{{ asset('assets/vendor/datatables.net-responsive/js/dataTables.responsive.min.js') }}"></script>
-    <script src="{{ asset('assets/vendor/datatables.net-responsive-bs5/js/responsive.bootstrap5.min.js') }}"></script>
-    <script src="{{ asset('assets/vendor/jquery-datatables-checkboxes/js/dataTables.checkboxes.min.js') }}"></script>
-
-    <!-- Product Demo App js -->
-    {{--    <script src="{{ asset('assets/js/pages/demo.products.js') }}"></script>--}}
 
     <script type="text/javascript">
         const deleteConfirm = (mid) => {
@@ -52,12 +44,53 @@
 
         $(document).ready(function() {
             $('#units-datatable').DataTable({
+	            dom: 'Blfrtip',
+	            buttons: [
+		            {
+			            extend: 'pdfHtml5',
+			            text: 'PDF',
+			            exportOptions: {
+				            modifier: {
+					            page: 'current'
+				            }
+			            }
+		            },
+		            {
+			            extend: 'csvHtml5',
+			            text: 'CSV',
+			            exportOptions: {
+				            modifier: {
+					            page: 'current'
+				            }
+			            }
+		            },
+		            {
+			            extend: 'copyHtml5',
+			            text: 'Copy',
+			            exportOptions: {
+				            modifier: {
+					            page: 'current'
+				            }
+			            }
+		            },
+		            {
+			            extend: 'excelHtml5',
+			            text: 'EXCEL',
+			            exportOptions: {
+				            modifier: {
+					            page: 'current'
+				            }
+			            }
+		            },
+
+	            ],
                 processing: true,
                 serverSide: true,
                 ajax: "{{ route('units.index') }}",
                 columns: [
                     { data: 'id', name: 'id' },
                     { data: 'name', name: 'name' },
+                    { data: 'medicines', name: 'medicines' },
                     { data: 'action', name: 'action', orderable: false, searchable: false },
                 ]
             });

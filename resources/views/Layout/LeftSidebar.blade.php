@@ -4,10 +4,10 @@
     <!-- Brand Logo Light -->
     <a href="/" class="logo logo-light" style="background: #262d36;">
         <span class="logo-lg">
-            <img src="/assets/images/sitelogo.png" alt="logo" style="height: 2.5em;">
+            <img src="/assets/images/{{ \App\Models\Setting\Setting::key("logo") }}" alt="logo" style="height: 2.5em;">
         </span>
         <span class="logo-sm">
-            <img src="/assets/images/sitelogo.png" alt="small logo">
+            <img src="/assets/images/{{ \App\Models\Setting\Setting::key("logo") }}" alt="small logo">
         </span>
     </a>
 
@@ -281,9 +281,68 @@
                                 New Sale
                             </a>
                         </li>
+                        <li>
+                            <a href="{{ route('sales.bulk') }}">
+                                <i class="mdi mdi-basket-plus"></i>
+                                Bulk Sale
+                            </a>
+                        </li>
                     </ul>
                 </div>
             </li>
+
+
+            <!-- Transfer -->
+            <li class="side-nav-item">
+                <a data-bs-toggle="collapse" href="#sidebarTransfer" aria-expanded="false" aria-controls="sidebarTransfer" class="side-nav-link">
+                    <i class="uil uil-truck-loading"></i>
+                    <span> Transfer </span>
+                    <span class="menu-arrow"></span>
+                </a>
+                <div class="collapse" id="sidebarTransfer">
+                    <ul class="side-nav-second-level">
+                        <li>
+                            <a href="{{ route('transfers.index') }}">
+                                <i class="mdi mdi-format-list-numbered"></i>
+                                Transfer List
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ route('transfers.create') }}">
+                                <i class="mdi mdi-account-multiple-plus-outline"></i>
+                                New Transfer
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </li>
+
+
+            <!-- Returns -->
+            <li class="side-nav-item">
+                <a data-bs-toggle="collapse" href="#sidebarReturn" aria-expanded="false" aria-controls="sidebarReturn" class="side-nav-link">
+                    <i class="uil uil-truck-loading"></i>
+                    <span> Returns </span>
+                    <span class="menu-arrow"></span>
+                </a>
+                <div class="collapse" id="sidebarReturn">
+                    <ul class="side-nav-second-level">
+                        <li>
+                            <a href="{{ route('returns.index') }}">
+                                <i class="mdi mdi-format-list-numbered"></i>
+                                Return List
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ route('returns.create') }}">
+                                <i class="mdi mdi-account-multiple-plus-outline"></i>
+                                New Return
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </li>
+
 
             <!-- Reports -->
             <li class="side-nav-item">

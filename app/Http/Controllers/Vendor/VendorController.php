@@ -23,16 +23,22 @@ class VendorController extends Controller
                 ->addColumn('purchases', function ($vendor){
                     return $vendor->purchases->count();
                 })
-                ->addColumn('action', function ($vendor){
-                    $editUrl = route('vendors.edit', [ 'vendor' => $vendor->id] );
-                    $destroyRoute = route('vendors.destroy', [ 'vendor' => $vendor->id] );
-                    $csrf_token = csrf_token();
-                    return "<a href=\"$editUrl\" class=\"action-icon\"> <i class=\"mdi mdi-square-edit-outline\"></i></a>
-                            <form class=\"d-inline-block\" id=\"customer-delete-$vendor->id\" action=\"$destroyRoute\" method=\"post\">
-                                <input type='hidden' name='_token' value='$csrf_token' >
-                                <input type=\"hidden\" name=\"id\" value=\"$vendor->id\">
-                                <a href=\"javascript:void(0);\" onclick=\"deleteConfirm($vendor->id)\" class=\"action-icon\"> <i class=\"mdi mdi-delete\"></i></a>
-                            </form>";
+                ->addColumn('action', function ($vendor) {
+	                $viewUrl = route('vendors.show', ['vendor' => $vendor->id]);
+	                $editUrl = route('vendors.edit', ['vendor' => $vendor->id]);
+	                $destroyRoute = route('vendors.destroy', ['vendor' => $vendor->id]);
+	                $csrf_token = csrf_token();
+	                if ($vendor->purchases->count() < 1){
+		                return "<a href=\"$viewUrl\" class=\"action-icon\"> <i class=\"ri-eye-fill\"></i></a>
+								<a href=\"$editUrl\" class=\"action-icon\"> <i class=\"mdi mdi-square-edit-outline\"></i></a>
+	                            <form class=\"d-inline-block\" id=\"customer-delete-$vendor->id\" action=\"$destroyRoute\" method=\"post\">
+	                                <input type='hidden' name='_token' value='$csrf_token' >
+	                                <input type=\"hidden\" name=\"id\" value=\"$vendor->id\">
+	                                <a href=\"javascript:void(0);\" onclick=\"deleteConfirm($vendor->id)\" class=\"action-icon\"> <i class=\"mdi mdi-delete\"></i></a>
+	                            </form>";
+                    } else {
+		                return "<a href=\"$editUrl\" class=\"action-icon\"> <i class=\"mdi mdi-square-edit-outline\"></i></a>";
+	                }
                 })
                 ->rawColumns(['medicine', 'action'])
                 ->make();
@@ -77,7 +83,10 @@ class VendorController extends Controller
      */
     public function edit(string $id)
     {
-        //
+		$vendor = Vendor::find($id);
+	    return view("ui.vendor.pages.EditVendor", [
+			"vendor" => $vendor
+	    ]);
     }
 
     /**
@@ -85,7 +94,16 @@ class VendorController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $vendor = Vendor::find($id);
+		
+		$vendor->update([
+			"name" => $request->name,
+			"email" => $request->email,
+			"phone" => $request->phone,
+			"address" => $request->address
+		]);
+		
+		return redirect()->route("vendors.index");
     }
 
     /**

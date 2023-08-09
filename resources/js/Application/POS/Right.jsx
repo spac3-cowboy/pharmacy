@@ -2,6 +2,8 @@ import {useEffect, useRef, useState} from "react";
 import CartTable from "./CartTable";
 import axios from "axios";
 import Swal from 'sweetalert2'
+import { CheckOutlined, CloseOutlined } from '@ant-design/icons';
+import { Switch, Space } from 'antd';
 
 function Right(props) {
     let [customers, setCustomers] = useState([]);
@@ -12,8 +14,10 @@ function Right(props) {
     let [subtotal, setSubtotal] = useState(0);
     let [grandtotal, setGrandtotal] = useState(0);
     let [vat_amount, setVatAmount] = useState(0);
+    let [isVatOn, toggleIsVatOn] = useState(true);
 
     let flat_discount = useRef(0);
+
 
 
     useEffect(() => {
@@ -38,13 +42,22 @@ function Right(props) {
 
         setSubtotal(subtotal);
         //setReceived(subtotal);
-
-        let gTotal = (subtotal - flat_discount.current.value) * (1 + (vat/100));
+        let gTotal = 0;
+        if ( !isVatOn ) {
+            gTotal = (subtotal - flat_discount.current.value) * (1 + (vat/100));
+        } else {
+            gTotal = (subtotal - flat_discount.current.value);
+        }
         setGrandtotal(gTotal);
+        if ( vat ) {
+            setVatAmount( gTotal * ( vat/100 ) )
+        }
+
+        //console.log(`gTotal: ${gTotal}, vat_amount: ${vat_amount}, vat: ${vat/100}`)
+
         document.querySelector("#received").value = Math.ceil(gTotal);
     }
     const pay = () => {
-        console.log("You Clicked pay button")
         if ( carts.length == 0  ) return;
         let allBatchSelected = carts.find(cart => {
             return !cart.batch;
@@ -61,7 +74,8 @@ function Right(props) {
             _token: _token,
             customer_id: customer_id,
             paid: paid,
-            discount: flat_discount.current.value ? flat_discount.current.value : 0
+            discount: flat_discount.current.value ? flat_discount.current.value : 0,
+            vat: isVatOn
         })
         .then(response => {
             if ( response.data.msg == "success" ) {
@@ -116,6 +130,10 @@ function Right(props) {
         TurnOverlayOff();
     }
 
+    function turnOffVat() {
+
+    }
+
     return (
         <>
             <div id="right">
@@ -146,7 +164,7 @@ function Right(props) {
                 </div>
                 <div id="cash-register">
                     <div id="added-product-list-container">
-                        <CartTable carts={carts} setCarts={setCarts} />
+                        <CartTable carts={carts} setCarts={setCarts} recalculate={recalculate} />
                     </div>
                     <div id="calculations-container" style={{ background: "white", width: "100%" }}>
                         <table>
@@ -168,8 +186,17 @@ function Right(props) {
                                 <tr>
                                     <td style={{ background: "orange", color: "white",  width:"50%", border:"1px solid #aaa", padding: "10px 10px" }}>
                                         <div style={{ display: "flex", justifyContent: "space-between" }}>
+                                            <Space direction="vertical">
+                                                <Switch
+                                                    checkedChildren={<CheckOutlined />}
+                                                    unCheckedChildren={<CloseOutlined />}
+                                                    defaultChecked
+                                                    onChange={()=> { toggleIsVatOn(!isVatOn); recalculate() }}
+                                                />
+                                            </Space>
                                             <span>VAT ({ vat }%)</span>
-                                            <span id="vat">{ vat_amount }</span>
+                                            <span id="vat">{ vat_amount.toFixed(2) }</span>
+
                                         </div>
                                     </td>
                                     <td style={{ background: "brown", color: "white",  width:"50%", border:"1px solid #aaa", padding: "10px 10px" }}>

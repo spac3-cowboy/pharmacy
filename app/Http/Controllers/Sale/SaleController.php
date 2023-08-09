@@ -3,10 +3,16 @@
 namespace App\Http\Controllers\Sale;
 
 use App\Http\Controllers\Controller;
+use App\Models\Cart\Cart;
+use App\Models\Medicine\Medicine;
+use App\Models\Medicine\Stock;
 use App\Models\Sale\Sale;
+use App\Models\Sale\SaleItem;
+use App\Models\Setting\Setting;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\DataTables;
 
 class SaleController extends Controller
@@ -124,4 +130,86 @@ class SaleController extends Controller
             "sale" => $sale
         ]);
     }
+	
+	public function bulk()
+	{
+		$medicines = Medicine::where("business_id", Auth::user()->owned_tenant->id)->get();
+		$customers = User::customers();
+		return view("ui.sale.pages.BulkSale", [
+			"medicines" => $medicines,
+			"customers" => $customers
+		]);
+	}
+	
+	public function bulkSale(Request $request)
+	{
+		
+		$customer_id = $request->customer_id;
+		if ( $customer_id == -1 )
+		{
+			$customer_id = null;
+		}
+		$total_quantity = $request->quantity;
+		$stock = Stock::find($request->stock_id);
+		
+		
+		$sub_total = $total_quantity * $stock->mrp;
+		$flat_discount = 0;
+		
+		$vat = Setting::key("vat") ?? 0;
+		// adding vat
+		$grand_total = ($sub_total * ( 1 + ( $vat / 100 ) ));
+		
+		// subtracting flat discount
+		$grand_total = $grand_total - $flat_discount;
+		
+		$vat_amount = $sub_total * (Setting::key("vat")/100) ;
+		
+		$due = (round($grand_total - $request->paid));
+		// if paid more than billed amount
+		$due = $due < 0 ? 0 : $due;
+		$paid = $request->paid;
+		
+		$sale = DB::transaction(function () use($stock, $total_quantity, $vat_amount, $sub_total, $flat_discount, $grand_total, $paid, $due, $customer_id) {
+			$sale = Sale::create([
+				"total_quantity" => $total_quantity,
+				"sub_total" => $sub_total,
+				"flat_discount" => $flat_discount,
+				"vat_amount" => $vat_amount,
+				"grand_total" => $grand_total,
+				"paid" => $paid,
+				"due" => $due,
+				"customer_id" => $customer_id,
+				"business_id" => Auth::user()->owned_tenant->id
+			]);
+			
+			SaleItem::create([
+				"sale_id" => $sale->id,
+				"stock_id" => $stock->id,
+				"quantity" => $stock->quantity,
+				"discount" => $flat_discount,
+				"business_id" => Auth::user()->owned_tenant->id,
+				"total" => $grand_total
+			]);
+			
+			// reducing the stock amount
+			$stock->update([
+				"quantity" => $stock->quantity - $total_quantity
+			]);
+			
+			
+			return $sale;
+		});
+		
+		if ( $sale ) {
+			return [
+				"msg" => "success",
+				"sale" => $sale
+			];
+		}
+		
+		return [
+			"msg" => "failed"
+		];
+	}
 }

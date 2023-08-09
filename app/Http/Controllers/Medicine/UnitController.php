@@ -16,20 +16,26 @@ class UnitController extends Controller
      */
     public function index(Request $request)
     {
-
         if ( $request->ajax() ) {
             $units = Unit::where("business_id", Auth::user()->owned_tenant->id)->get();
             return DataTables::of($units)
+	            ->addColumn("medicines", function ($unit){
+					return $unit->medicines->count();
+	            })
                 ->addColumn('action', function ($unit) {
                     $editUrl = route('units.edit', ['unit' => $unit->id] );
                     $destroyRoute = route('units.destroy', ['unit' => $unit->id] );
                     $csrf_token = csrf_token();
-                    return "<a href=\"$editUrl\" class=\"action-icon\"> <i class=\"mdi mdi-square-edit-outline\"></i></a>
-                            <form class=\"d-inline-block\" id=\"unit-delete-$unit->id\" action=\"$destroyRoute\" method=\"post\">
-                                <input type='hidden' name='_token' value='$csrf_token' >
-                                <input type=\"hidden\" name=\"id\" value=\"$unit->id\">
-                                <a href=\"javascript:void(0);\" onclick=\"deleteConfirm($unit->id)\" class=\"action-icon\"> <i class=\"mdi mdi-delete\"></i></a>
-                            </form>";
+					if( $unit->medicines->count() < 1 ) {
+						return "<a href=\"$editUrl\" class=\"action-icon\"> <i class=\"mdi mdi-square-edit-outline\"></i></a>
+	                            <form class=\"d-inline-block\" id=\"unit-delete-$unit->id\" action=\"$destroyRoute\" method=\"post\">
+	                                <input type='hidden' name='_token' value='$csrf_token' >
+	                                <input type=\"hidden\" name=\"id\" value=\"$unit->id\">
+	                                <a href=\"javascript:void(0);\" onclick=\"deleteConfirm($unit->id)\" class=\"action-icon\"> <i class=\"mdi mdi-delete\"></i></a>
+	                            </form>";
+					} else {
+						return "<a href=\"$editUrl\" class=\"action-icon\"> <i class=\"mdi mdi-square-edit-outline\"></i></a>";
+					}
                 })
                 ->make();
         }
@@ -70,7 +76,10 @@ class UnitController extends Controller
      */
     public function edit(string $id)
     {
-        //
+		$unit = Unit::find($id);
+	    return view("ui.unit.pages.EditUnit", [
+			"unit" => $unit
+	    ]);
     }
 
     /**
@@ -78,7 +87,19 @@ class UnitController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $request->validate([
+			"name" => "required|string"
+        ]);
+		
+		$unit = Unit::find($id);
+		if ( $unit ) {
+			$unit->update([
+				"name" => $request->name
+			]);
+			
+			return redirect()->route("units.index");
+		}
+	    return back();
     }
 
     /**

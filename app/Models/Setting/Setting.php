@@ -4,6 +4,7 @@ namespace App\Models\Setting;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 
 class Setting extends Model
 {
@@ -13,6 +14,10 @@ class Setting extends Model
 
     public static function key(string $key)
     {
-        return Setting::where("key", $key)->first()->value ?? "";
+        $s = Setting::where("key", $key)
+	            ->where("business_id", Auth::user()->owned_tenant->id)
+	            ->first()->value ?? "";
+		
+		return $s;
     }
 }

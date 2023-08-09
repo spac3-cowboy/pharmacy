@@ -78,7 +78,7 @@
                             <label class="form-label" for="first-name-column">
                                 Unit <sup class="text-danger">*</sup>
                             </label>
-                            <select class="form-select" id="unit" name="unit_name"  required>
+                            <select class="form-select" id="unit" name="unit_id"  required>
                                 @foreach($units as $unit)
                                     <option value="{{ $unit->id }}">{{ $unit->name }}</option>
                                 @endforeach

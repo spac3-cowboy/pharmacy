@@ -21,7 +21,7 @@
                     <div class="col-12">
                         <div class="mb-1">
                             <label class="form-label" for="first-name-column">Unit Name</label>
-                            <input type="text" id="last-name-column" class="form-control" placeholder="CategoryName" name="name" required="true" >
+                            <input type="text" id="last-name-column" class="form-control" placeholder="Enter Unit" name="name" required="true" >
                         </div>
                     </div>
                     <div class="col-12 mt-3 text-end">

@@ -12,7 +12,6 @@ function Left(props) {
     let keyFilter = useRef();
 
     useEffect(()=>{
-        console.log("left")
         setCategories(props.categories);
         setVendors(props.vendors);
         setStocks(props.stocks);
@@ -26,7 +25,6 @@ function Left(props) {
         })
         .then(response => {
             if ( response.data.msg == "success" ) {
-                console.log(response.data)
                 setCarts(response.data.carts);
             } else {
                 Swal.fire({
@@ -58,7 +56,6 @@ function Left(props) {
             qparam += "&ven_id=" + ven_id
         }
 
-        console.log( ven_id )
 
         TurnOverlayOn();
         axios.get(`/dashboard/pos/search${qparam}`)

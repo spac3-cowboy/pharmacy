@@ -22,15 +22,6 @@
 
 
 @section("scripts")
-    <!-- Datatable js -->
-    <script src="{{ asset('assets/vendor/datatables.net/js/jquery.dataTables.min.js') }}"></script>
-    <script src="{{ asset('assets/vendor/datatables.net-bs5/js/dataTables.bootstrap5.min.js') }}"></script>
-    <script src="{{ asset('assets/vendor/datatables.net-responsive/js/dataTables.responsive.min.js') }}"></script>
-    <script src="{{ asset('assets/vendor/datatables.net-responsive-bs5/js/responsive.bootstrap5.min.js') }}"></script>
-    <script src="{{ asset('assets/vendor/jquery-datatables-checkboxes/js/dataTables.checkboxes.min.js') }}"></script>
-
-    <!-- Product Demo App js -->
-    {{--    <script src="{{ asset('assets/js/pages/demo.products.js') }}"></script>--}}
 
     <script type="text/javascript">
         $('#filter').click(function () {
@@ -39,22 +30,48 @@
 
         $(document).ready(function () {
             $('#reports-datatable').DataTable({
+	            dom: 'Blfrtip',
+	            buttons: [
+		            {
+			            extend: 'pdfHtml5',
+			            text: 'PDF',
+			            exportOptions: {
+				            modifier: {
+					            page: 'current'
+				            }
+			            }
+		            },
+		            {
+			            extend: 'csvHtml5',
+			            text: 'CSV',
+			            exportOptions: {
+				            modifier: {
+					            page: 'current'
+				            }
+			            }
+		            },
+		            {
+			            extend: 'copyHtml5',
+			            text: 'Copy',
+			            exportOptions: {
+				            modifier: {
+					            page: 'current'
+				            }
+			            }
+		            },
+		            {
+			            extend: 'excelHtml5',
+			            text: 'EXCEL',
+			            exportOptions: {
+				            modifier: {
+					            page: 'current'
+				            }
+			            }
+		            },
+
+	            ],
                 processing: true,
                 serverSide: true,
-                "dom": 'Blfrtip',
-                {{--ajax: "{{ route('report.generate') }}",--}}
-                {{--"data": function (d) {--}}
-                {{-- 	d.from = $("#from").val();--}}
-                {{-- 	d.to = $("#to").val();--}}
-                {{-- 	d.member_id = $("#member_id").val();--}}
-                {{-- 	d.collector_id = $("#collector_id").val();--}}
-                {{--},--}}
-                // data: [
-                // 	{
-                // 		"name": "from",
-                // 		"value" : $("#from").val()
-                // 	}
-                // ],
                 "ajax": {
                     "url": "{{ route('reports.purchase') }}",
                     "type": 'GET',

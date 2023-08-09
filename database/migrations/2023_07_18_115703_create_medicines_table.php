@@ -14,7 +14,6 @@ return new class extends Migration
         Schema::create('medicines', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('business_id');
-
             $table->string("name")->unique();
             $table->string("generic_name");
             $table->string("shelf");
@@ -22,6 +21,7 @@ return new class extends Migration
             $table->double("manufacturing_price");
             $table->string("strength");
             $table->string("image");
+            $table->boolean("globally_visible")->default(false);
             $table->unsignedBigInteger("category_id");
             $table->unsignedBigInteger("manufacturer_id");
             $table->unsignedBigInteger("unit_id");

@@ -83,6 +83,43 @@ class CustomerController extends Controller
      */
     public function show(string $id)
     {
+	    if ( \request()->ajax() ) {
+		    $sales = Sale::where("business_id", Auth::user()->owned_tenant->id)
+			                ->where("customer_id", $id)
+			                ->get();
+		    return DataTables::of($sales)
+			    ->addColumn("sale_id", function ($sale){
+				    return "INV" . $sale->id;
+			    })
+			    ->addColumn("customer", function ($sale){
+				    if ( $sale->customer_id ) {
+					    return $sale->customer->name;
+				    }
+				    return "Walkway Customer";
+			    })
+			    ->addColumn("products", function ($sale){
+				    $items = "";
+				    return $sale->items->reduce(function ($final, $item){
+					    return $final . $item->stock->medicine->name . "<br />";
+				    },"");
+			    })
+			    ->addColumn("qty", function ($sale){
+				    return $sale->total_quantity;
+			    })
+			    ->addColumn("total", function ($sale){
+				    return $sale->total;
+			    })
+			    ->addColumn("date", function ($sale){
+				    return $sale->created_at;
+			    })
+			    ->addColumn("invoice", function ($sale){
+				    $viewInvoiceUrl = route("sales.invoice", [ "sale" => $sale->id ]);
+				    return "<a href=\"$viewInvoiceUrl\" class=\"btn btn-secondary text-white action-icon\"> <i class=\"uil uil-invoice\"></i></a>";
+			    })
+			    ->rawColumns(["sale_id", "customer", "products", "qty", "total", "date", "invoice"])
+			    ->make();
+	    }
+		
 		$currency_symbol = Setting::key("currency_symbol");
 	    $customer = User::find($id);
 	    $total_bought = Sale::where("customer_id", $customer->id)
@@ -96,6 +133,7 @@ class CustomerController extends Controller
 							return $sale->paid + $total;
 	                    });
 	    $total_due = $total_bought - $total_paid;
+		
 		
 	    return view("ui.customer.pages.ShowCustomer", [
 			"customer" => $customer,

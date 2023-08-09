@@ -39,12 +39,42 @@
             <input type="text" class="form-control w-50" id="vat" value="{{ \App\Models\Setting\Setting::key("vat") }}" />
             <button class="btn btn-success mx-2 w-25"  onclick="updateKey('vat')">UPDATE</button>
         </div>
+        <hr />
+
+        <div class="form-group d-flex justify-content-start">
+            <label for="" class="mx-2 w-25">Invoice Bottom Text : </label>
+            <textarea cols="1" rows="2" type="text" class="form-control w-50" id="invoice-bottom-text">
+                {{ \App\Models\Setting\Setting::key("invoice-bottom-text") }}
+            </textarea>
+            <button class="btn btn-success mx-2 w-25"  onclick="updateKey('invoice-bottom-text')">UPDATE</button>
+        </div>
+        <hr />
+
+        <div class="form-group d-flex justify-content-start">
+            <label for="" class="mx-2 w-25">  </label>
+            <div class="w-50 text-center">
+                <img id="logo-image-preview" style="width: 150px; height: 150px;" class="img-thumbnail d-inline-block" src="/assets/images/{{ \App\Models\Setting\Setting::key("logo") }}" alt="">
+            </div>
+            <button class="btn btn-success mx-2 w-25" style="visibility: hidden"></button>
+        </div>
+
+        <div class="form-group d-flex justify-content-start mt-2">
+            <label for="" class="mx-2 w-25"> Logo : </label>
+            <input onchange="previewImage()" type="file" id="logo-image" name="image"  class="form-control w-50" id="vat" value="{{ \App\Models\Setting\Setting::key("logo") }}" />
+            <button class="btn btn-success mx-2 w-25"  onclick="updateLogo()">UPDATE</button>
+        </div>
     </div>
 </div>
 
 
 <script>
-    function updateKey(key) {
+    function previewImage() {
+	    let logoImage = document.querySelector("#logo-image").files[0];
+	    let logoImagePreview = document.querySelector("#logo-image-preview");
+	    logoImagePreview.src = URL.createObjectURL(logoImage)
+	}
+
+	function updateKey(key) {
 
         let _token = document.querySelector('meta[name="csrf-token"]').content;
         let value = document.querySelector("#"+key).value;
@@ -70,5 +100,33 @@
                 });
             }
         });
+    }
+
+    function updateLogo() {
+
+	    let _token = document.querySelector('meta[name="csrf-token"]').content;
+	    let logoImage = document.querySelector("#logo-image").files[0];
+
+	    let payload = new FormData();
+	    payload.append("key", "logo");
+	    payload.append("image", logoImage);
+	    payload.append("_token", _token);
+	    TurnOverlayOn();
+	    fetch("/dashboard/settings/update",{
+		    method: "POST",
+		    body: payload
+	    })
+		    .then(r => r.json())
+		    .then(data => {
+			    console.log(data)
+			    TurnOverlayOff();
+			    if ( data.msg == "success" ) {
+				    Swal.fire({
+					    "title": "success",
+					    "description": "Updated",
+					    "icon": "success"
+				    });
+			    }
+		    });
     }
 </script>

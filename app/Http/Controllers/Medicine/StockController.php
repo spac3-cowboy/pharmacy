@@ -335,4 +335,10 @@ class StockController extends Controller
         }
         return view("ui.stock.pages.PaginatedToBeExpiredStock");
     }
+	
+	
+	public function transferPage()
+	{
+		return view("ui.stock.pages.Transfer");
+	}
 }
