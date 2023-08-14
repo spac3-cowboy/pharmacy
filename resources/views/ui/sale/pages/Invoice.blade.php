@@ -1813,17 +1813,17 @@
         </section>
     </div>
 
-    <div class="action-button">
-        <a href="{{ route('pos') }}" class="btn back-to-pos">
-            Back to POS
-        </a>
-        <a href="{{ route('dashboard') }}" class="btn back-to-dashboard">
-            Back to Dashboard
-        </a>
-        <button type="button" onclick="printDiv('invoiceArea')" class="btn print-button">
-            Print
-        </button>
-    </div>
+{{--    <div class="action-button">--}}
+{{--        <a href="{{ route('pos') }}" class="btn back-to-pos">--}}
+{{--            Back to POS--}}
+{{--        </a>--}}
+{{--        <a href="{{ route('dashboard') }}" class="btn back-to-dashboard">--}}
+{{--            Back to Dashboard--}}
+{{--        </a>--}}
+{{--        <button type="button" onclick="printDiv('invoiceArea')" class="btn print-button">--}}
+{{--            Print--}}
+{{--        </button>--}}
+{{--    </div>--}}
 </div>
 
 

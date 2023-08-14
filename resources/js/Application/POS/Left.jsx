@@ -1,5 +1,7 @@
 import {useEffect, useRef, useState} from "react";
 import axios from "axios";
+import Select from 'react-select'
+import Swal from "sweetalert2";
 
 function Left(props) {
     let [categories, setCategories] = useState([]);
@@ -8,7 +10,6 @@ function Left(props) {
 
     let { setCarts } = props;
     let catFilter = useRef();
-    let venFilter = useRef();
     let keyFilter = useRef();
 
     useEffect(()=>{
@@ -44,16 +45,12 @@ function Left(props) {
     const search = () => {
         let key = keyFilter.current.value;
         let cat_id = catFilter.current.value;
-        let ven_id = venFilter.current.value;
         let qparam = `?`;
         if ( key.length ) {
             qparam += "q=" + key
         }
         if ( cat_id != -1  ) {
             qparam += "&cat_id=" + cat_id
-        }
-        if ( ven_id != -1 ) {
-            qparam += "&ven_id=" + ven_id
         }
 
 
@@ -88,14 +85,6 @@ function Left(props) {
                                 })
                             }
                         </select>
-                        <select onChange={()=>search()}  ref={venFilter} name="vendor" id="vendor">
-                            <option  value="-1">Select Vendor</option>
-                            {
-                                vendors.map((vendor, i)=>{
-                                    return <option key={i} value={vendor.id}>{vendor.name}</option>
-                                })
-                            }
-                        </select>
                     </div>
                 </div>
                 <div className="products-container">
@@ -104,7 +93,7 @@ function Left(props) {
                             return (
                                 <div className="product" key={i}>
                                     <div className="product-image">
-                                        <img src={'/assets/images/medicine/' + stock.medicine.image } alt="Image" />
+                                        <img src={'/category/' + stock.medicine.image } alt="Image" />
                                     </div>
                                     <div className="product-title">{ stock.medicine.name }</div>
                                     <div className="product-price">

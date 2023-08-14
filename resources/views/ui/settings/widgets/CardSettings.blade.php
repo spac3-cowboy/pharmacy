@@ -106,7 +106,7 @@
 
 	    let _token = document.querySelector('meta[name="csrf-token"]').content;
 	    let logoImage = document.querySelector("#logo-image").files[0];
-
+	    console.log(logoImage)
 	    let payload = new FormData();
 	    payload.append("key", "logo");
 	    payload.append("image", logoImage);

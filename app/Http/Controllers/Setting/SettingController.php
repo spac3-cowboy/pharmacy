@@ -99,8 +99,18 @@ class SettingController extends Controller
 		$setting = Setting::where("key", "logo")
 							 ->where("business_id", Auth::user()->owned_tenant->id)
 							 ->first();
-		if ( $setting ) {
+		
+		if ( $setting )
+		{
 			$setting->update([
+				"value" => $filename
+			]);
+		}
+		else
+		{
+			Setting::create([
+				"business_id" => Auth::user()->owned_tenant->id,
+				"key" => "logo",
 				"value" => $filename
 			]);
 		}

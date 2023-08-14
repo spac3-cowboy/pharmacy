@@ -12,6 +12,7 @@ class Medicine extends Model
 {
     use HasFactory, SoftDeletes;
     protected $guarded = [];
+	protected $appends = ["image"];
 	
     public function category()
     {
@@ -30,5 +31,11 @@ class Medicine extends Model
 	public function unit()
 	{
 		return $this->belongsTo(Unit::class);
+	}
+	
+	
+	public function getImageAttribute()
+	{
+		return $this->category->image;
 	}
 }

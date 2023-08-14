@@ -5,9 +5,9 @@
                 <th class="all">#</th>
                 <th>Sale ID</th>
                 <th>Customer</th>
-                <th>Products</th>
                 <th>Total Qty.</th>
-                <th>Total Cost</th>
+                <th>Grand Total</th>
+                <th>Paid</th>
                 <th>Date</th>
                 <th>Invoice</th>
                 <th>Action</th>
@@ -94,9 +94,9 @@
                     { data: 'id', name: 'id' },
                     { data: 'sale_id', name: 'sale_id' },
                     { data: 'customer', name: 'customer' },
-                    { data: 'products', name: 'products' },
                     { data: 'qty', name: 'qty' },
                     { data: 'total', name: 'total' },
+                    { data: 'paid', name: 'paid' },
                     { data: 'date', name: 'date' },
                     { data: 'invoice', name: 'invoice' },
                     { data: 'action', name: 'action' },

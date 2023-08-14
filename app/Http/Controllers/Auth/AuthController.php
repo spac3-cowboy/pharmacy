@@ -63,9 +63,15 @@ class AuthController extends Controller
     {
         //
     }
+	
+	public function profile()
+	{
+		return view("ui.profile.pages.Profile");
+	}
 
     public function loginPage()
     {
+		Auth::logout();
         return view("Auth.Login");
     }
     public function login(Request $request)
@@ -74,8 +80,16 @@ class AuthController extends Controller
             "email" => "required|email",
             "password" => "required|string"
         ]);
-        if ( Auth::attempt($request->only(["email", "password"])) ) {
-            return redirect()->route("dashboard");
+        if ( Auth::attempt($request->only(["email", "password"])) )
+		{
+			if ( Auth::user()->user_type == 1 )
+			{
+                return redirect()->route("admin.dashboard");
+			}
+			if ( Auth::user()->user_type == 2 )
+			{
+                return redirect()->route("dashboard");
+			}
         }
 
         return redirect()->back()->withErrors(["msg" => "Wrong Credentials"]);

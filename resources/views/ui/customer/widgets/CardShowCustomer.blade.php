@@ -5,7 +5,7 @@
     </div>
     <div class="card-body">
         <div class="row justify-content-around">
-            <div class="col-lg-4 border border-danger p-2 rounded-1 shadow bg-white">
+            <div class="col-lg-4 border-end p-2 rounded-1 bg-white">
                 <img src="{{ $customer->image }}" alt="Photo of {{ $customer->name }}" class="img-thumbnail">
                 <table class="table">
                     <tbody>
@@ -35,41 +35,47 @@
                     </tr>
                     </tbody>
                 </table>
+            </div>
+            <div class="col-lg-7 p-2 shadow-none bg-white d-flex align-items-center flex-column">
                 <table class="table">
                     <tbody>
-                        <tr>
-                            <td><strong>Name: </strong> {{ $customer->name }}</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Age: </strong>{{ $customer->age }}</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Phone: </strong>{{ $customer->phone }}</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Email: </strong>{{ $customer->email }}</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Address: </strong>{{ $customer->address }}</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Blood Group: </strong>{{ $customer->bg }}</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Role: </strong>{{ $customer->role }}</td>
-                        </tr>
+                    <tr>
+                        <td><strong>Name: </strong> {{ $customer->name }}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Age: </strong>{{ $customer->age }}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Phone: </strong>{{ $customer->phone }}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Email: </strong>{{ $customer->email }}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Address: </strong>{{ $customer->address }}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Blood Group: </strong>{{ $customer->bg }}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Role: </strong>{{ $customer->role }}</td>
+                    </tr>
                     </tbody>
                 </table>
             </div>
-            <div class="col-lg-7 p-2 shadow-none bg-white d-flex align-items-center flex-column">
+        </div>
+        <div class="row mt-2 border border-secondary pt-1">
+            <div class="col-12">
                 <table class="table table-centered w-100 dt-responsive nowrap" id="sales-datatable">
                     <thead class="table-light">
                     <tr>
                         <th class="all">#</th>
                         <th>Sale ID</th>
                         <th>Products</th>
-                        <th>Total Qty.</th>
-                        <th>Total Cost</th>
+                        <th>Total Qty</th>
+                        <th>Grand Total</th>
+                        <th>Paid</th>
+                        <th>Due</th>
                         <th>Date</th>
                         <th>Invoice</th>
                     </tr>
@@ -104,6 +110,8 @@
 				{ data: 'products', name: 'products' },
 				{ data: 'qty', name: 'qty' },
 				{ data: 'grand_total', name: 'grand_total' },
+				{ data: 'paid', name: 'paid' },
+				{ data: 'due', name: 'due' },
 				{ data: 'date', name: 'date' },
 				{ data: 'invoice', name: 'invoice' }
 				// { data: 'action', name: 'action', orderable: false, searchable: false },

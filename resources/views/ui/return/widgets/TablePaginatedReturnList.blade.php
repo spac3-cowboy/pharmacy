@@ -3,9 +3,7 @@
         <thead class="table-light">
             <tr>
                 <th class="all">#</th>
-                <th>Transfer ID</th>
-                <th>Medicine</th>
-                <th>Batch</th>
+                <th>Items</th>
                 <th>Quantity</th>
                 <th>Note</th>
                 <th>Action</th>
@@ -87,13 +85,11 @@
 	            ],
                 processing: true,
                 serverSide: true,
-                ajax: "{{ route('transfers.index') }}",
+                ajax: "{{ route('returns.index') }}",
                 columns: [
                     { data: 'id', name: 'id' },
-                    { data: 'transfer_id', name: 'transfer_id' },
-                    { data: 'medicine', name: 'medicine' },
-                    { data: 'batch', name: 'batch' },
-                    { data: 'total_quantity', name: 'total_quantity' },
+                    { data: 'items', name: 'items' },
+                    { data: 'total', name: 'total' },
                     { data: 'note', name: 'note' },
                     { data: 'action', name: 'action' }
                     // { data: 'action', name: 'action', orderable: false, searchable: false },

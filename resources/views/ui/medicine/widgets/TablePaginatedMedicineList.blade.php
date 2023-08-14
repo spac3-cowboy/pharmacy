@@ -13,7 +13,6 @@
                 <th>Strength</th>
                 <th>Image</th>
                 <th>Category</th>
-                <th>Manufacturer</th>
                 <th>Action</th>
             </tr>
         </thead>
@@ -104,7 +103,6 @@
                     { data: 'strength', name: 'strength' },
                     { data: 'image', name: 'image' },
                     { data: 'category', name: 'category' },
-                    { data: 'manufacturer', name: 'manufacturer' },
                     { data: 'action', name: 'action', orderable: false, searchable: false },
                 ],
             });

@@ -4,6 +4,7 @@ namespace App\Models\Medicine;
 
 use App\Models\Cart\Cart;
 use App\Models\Manufacturer\Manufacturer;
+use App\Models\Vendor\Vendor;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -26,9 +27,9 @@ class Stock extends Model
     {
         $stocks = [];
         $query = Stock::with(["medicine.category"])
-                ->whereDate("expiry_date", ">", Carbon::today()->toDateString())
-                ->where("quantity", ">",     0)
-                ->where("business_id", Auth::user()->owned_tenant->id);
+	                ->whereDate("expiry_date", ">", Carbon::today()->toDateString())
+	                ->where("quantity", ">",     0)
+	                ->where("business_id", Auth::user()->owned_tenant->id);
 				
 				if ( $vendor_id ) {
 					$query->where("vendor_id", $vendor_id);
@@ -43,6 +44,10 @@ class Stock extends Model
                     
                 })
                 ->get()
+                ->map(function ($stock){
+					$stock->medicine->image = $stock->medicine->image;
+					return $stock;
+                })
                 ->unique("medicine_id")
                 ->each(function ($stock) use(&$stocks) {
                     $stocks[] = $stock;
@@ -84,8 +89,13 @@ class Stock extends Model
     {
         return $this->belongsTo(Medicine::class);
     }
+	
     public function manufacturer()
     {
         return $this->belongsTo(Manufacturer::class, "manufacturer_id");
+    }
+    public function vendor()
+    {
+        return $this->belongsTo(Vendor::class, "vendor_id");
     }
 }

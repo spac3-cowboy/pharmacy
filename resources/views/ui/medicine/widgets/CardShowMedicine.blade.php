@@ -6,7 +6,7 @@
     <div class="card-body pb-0">
         <div class="row justify-content-around">
             <div class="col-4 p-0 m-0 text-center d-flex justify-content-center align-items-center">
-                <img class="img-thumbnail" height="280px" width="280px" src="/medicines/{{ $medicine->image }}" alt="">
+                <img class="img-thumbnail" height="280px" width="280px" src="/category/{{ $medicine->image }}" alt="">
             </div>
             <div class="col-6  d-flex justify-content-center align-items-center">
                 <table class="table border">

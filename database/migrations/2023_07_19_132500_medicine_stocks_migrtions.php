@@ -17,8 +17,9 @@ return new class extends Migration
 
             $table->unsignedInteger("quantity"); // quantity = available amount of medicines
             $table->unsignedBigInteger("medicine_id");
-            $table->unsignedBigInteger("vendor_id");
-            $table->unsignedBigInteger("manufacturer_id");
+            $table->unsignedBigInteger("vendor_id")->nullable();
+            $table->unsignedBigInteger("purchase_id");
+            $table->unsignedBigInteger("manufacturer_id")->nullable();
             $table->date("manufacturing_date");
             $table->date("expiry_date");
             $table->string("batch");

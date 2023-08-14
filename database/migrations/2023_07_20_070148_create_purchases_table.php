@@ -14,7 +14,6 @@ return new class extends Migration
         Schema::create('purchases', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('business_id');
-            $table->unsignedBigInteger('vendor_id');
             $table->date("purchase_date");
             $table->unsignedDouble("amount");
             $table->unsignedDouble("paid");
@@ -26,7 +25,9 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('business_id');
             $table->unsignedDouble("purchase_id");
-            $table->string("batch", 500);
+	        $table->unsignedBigInteger('vendor_id')->nullable();
+	        $table->unsignedBigInteger('manufacturer_id')->nullable();
+	        $table->string("batch", 500);
             $table->unsignedBigInteger("medicine_id");
             $table->unsignedInteger("quantity");
             $table->date("manufacturing_date");

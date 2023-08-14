@@ -40,7 +40,31 @@
     <!---------------------- Custom CSS -------------------->
     <link href="{{ asset('/assets/css/custom.css') }}" rel="stylesheet" type="text/css" />
 
+
+    <style type="text/css">
+        .select2-container {
+            height: 52px!important;
+        }
+        .select2-container--default .select2-selection--single {
+            border: 2px solid #f0f1f3!important;
+        }
+        .select2-container .select2-selection--single {
+            height: 54px!important;
+        }
+        .select2-container--default .select2-selection--single .select2-selection__rendered {
+            line-height: 54px!important;
+        }
+        .select2-container--default .select2-selection--single .select2-selection__arrow {
+            line-height: 54px!important;
+            height: 54px!important;
+        }
+        .select2-container--default .select2-selection--single {
+            border: 2px solid #dee2e6 !important;
+        }
+    </style>
     @yield("styles")
+
+
 
 </head>
 

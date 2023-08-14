@@ -315,7 +315,7 @@ class POSController extends Controller
         });
         $flat_discount = $request->discount;
 	
-	    $vat = Setting::key("vat") ?? 0;
+	    $vat = ( is_numeric(Setting::key("vat")) ? Setting::key("vat") : 0 );
 		
         // adding vat
 	    if ( $vat != 0 ) {
@@ -327,12 +327,18 @@ class POSController extends Controller
 		
         // subtracting flat discount
         $grand_total = $grand_total - $flat_discount;
+	
+	    if ( $vat != 0 ) {
+            $vat_amount = $sub_total * ($vat/100);
+	    } else {
+            $vat_amount = 0;
+	    }
 
-        $vat_amount = $sub_total * (Setting::key("vat")/100) ;
-
-        $due = (round($grand_total - $request->paid));
+        $due = (($grand_total - $request->paid));
         // if paid more than billed amount
-        $due = $due < 0 ? 0 : $due;
+	    if ( !$due ) {
+            $due = 0;
+	    }
         $paid = $request->paid;
 
 

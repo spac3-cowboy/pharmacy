@@ -36,10 +36,12 @@ class PurchaseController extends Controller
                         $editUrl = route('purchases.edit', [ 'purchase' => $purchase->id ] );
                         $destroyRoute = route('purchases.destroy', [ 'purchase' => $purchase->id] );
                         $csrf_token = csrf_token();
-                        return "
+						if ( $purchase->sale ) {
+							return "
                                 <a href=\"$viewPurchaseUrl\" class=\"action-icon\"> <i class=\"mdi mdi-eye\"></i></a>
                                 <a href=\"$editUrl\" class=\" hide action-icon\"> <i class=\"mdi mdi-square-edit-outline\"></i></a>
                                ";
+						}
                     })
                     ->rawColumns(["medicines", "action"])
                     ->make();
@@ -65,55 +67,52 @@ class PurchaseController extends Controller
      */
     public function store(Request $request)
     {
-        //return $request->all();
         $items = $request->items;
         $purchase_date = $request->t["purchase_date"];
         $paid = $request->t["paid"];
-        $vendor_id = $request->t["vendor_id"];
-
-        $amount = collect($items)->reduce(function ($total, $item){
+        $amount = collect($items)->reduce(function ($total, $item) {
                         return $total + (($item["mrp"] * $item["quantity"]) - $item["flat_discount"] );
                   });
 
 
-        DB::transaction(function () use($items, $amount, $purchase_date, $paid, $vendor_id) {
+        DB::transaction(function () use($items, $amount, $purchase_date, $paid) {
 
             $purchase = Purchase::create([
-                "purchase_date" => $purchase_date,
-                "amount" => $amount,
-                "vendor_id" => $vendor_id,
-                "paid" => $paid,
-                "business_id" => Auth::user()->owned_tenant->id
-            ]);
+			                "purchase_date" => $purchase_date,
+			                "amount" => $amount,
+			                "paid" => $paid,
+			                "business_id" => Auth::user()->owned_tenant->id
+			            ]);
+			
             foreach ($items as $item)
             {
-                PurchaseItem::create([
-                    "purchase_id" => $purchase->id,
-                    "medicine_id" => $item["medicine_id"],
-                    "batch" => $item["batch"],
-                    "quantity" => $item["quantity"],
-                    "manufacturing_date" => $item["manufacturing_date"],
-                    "expiry_date" => $item["expiry_date"],
-                    "mrp" => $item["mrp"],
-                    "buy_price" => $item["buy_price"],
-                    "flat_discount" => $item["flat_discount"],
-                    "business_id" => Auth::user()->owned_tenant->id
-                ]);
-            }
-
-            foreach ($items as $item)
-            {
+                $purchaseItem = PurchaseItem::create([
+				                    "purchase_id" => $purchase->id,
+				                    "medicine_id" => $item["medicine_id"],
+				                    "batch" => $item["batch"],
+				                    "quantity" => $item["quantity"],
+				                    "manufacturing_date" => $item["manufacturing_date"],
+				                    "manufacturer_id" => $item["manufacturer_id"],
+				                    "vendor_id" => $item["vendor_id"],
+				                    "expiry_date" => $item["expiry_date"],
+				                    "mrp" => $item["mrp"],
+				                    "buy_price" => $item["buy_price"],
+				                    "flat_discount" => $item["flat_discount"],
+				                    "business_id" => Auth::user()->owned_tenant->id
+				                ]);
+				
+				
                 $batch = $item["batch"];
-                $manufacturer_id = Medicine::find($item["medicine_id"])->manufacturer_id;
                 $cost = $item["quantity"] * $item["buy_price"];
                 $tmpStock = Stock::where("batch", $batch)->first();
                 if ( !$tmpStock )
                 {
                     Stock::create([
+                        "purchase_id" => $purchaseItem->id,
                         "medicine_id" => $item["medicine_id"],
                         "quantity" => $item["quantity"],
-                        "manufacturer_id" => $manufacturer_id,
-	                    "vendor_id" => $vendor_id,
+                        "manufacturer_id" => $manufacturer_id ?? null,
+	                    "vendor_id" => $vendor_id ?? null,
 	                    "manufacturing_date" => $item["manufacturing_date"],
                         "expiry_date" => $item["expiry_date"],
                         "batch" => $batch,

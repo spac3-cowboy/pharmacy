@@ -23,8 +23,12 @@ class CustomerController extends Controller
         if ( $request->ajax() ) {
             $customers = User::customers();
             return DataTables::of($customers)
-                ->addColumn('due', function ($user){
-                    return 0;
+                ->addColumn('due', function ($user) {
+					return Sale::where("customer_id", $user->id)
+							->get()
+							->reduce(function ($total, $sale) {
+								return $total + $sale->due;
+							},0);
                 })
                 ->addColumn('action', function ($user){
 	                $viewUrl = route('customers.show', ['customer' => $user->id] );
@@ -68,10 +72,18 @@ class CustomerController extends Controller
         $data["user_type"] = 4;
         $data["business_id"] = Auth::user()->owned_tenant->id;
 //        dd($data);
+	
+	    try
+	    {
+            $user = User::create($data);
+	    }
+		catch (\Exception $exception)
+		{
+			return redirect()->back()->withErrors(["msg" => $exception->getMessage()]);
+		}
 
-        $user = User::create($data);
-
-        if ( $user ) {
+        if ( $user )
+		{
             return redirect()->route("customers.index")->with(["msg" => "New User Created"]);
         }
 
@@ -98,16 +110,16 @@ class CustomerController extends Controller
 				    return "Walkway Customer";
 			    })
 			    ->addColumn("products", function ($sale){
-				    $items = "";
-				    return $sale->items->reduce(function ($final, $item){
-					    return $final . $item->stock->medicine->name . "<br />";
-				    },"");
+				    return $sale->items->count();
 			    })
 			    ->addColumn("qty", function ($sale){
 				    return $sale->total_quantity;
 			    })
-			    ->addColumn("total", function ($sale){
-				    return $sale->total;
+			    ->addColumn("paid", function ($sale){
+				    return $sale->paid;
+			    })
+			    ->addColumn("due", function ($sale){
+				    return $sale->due;
 			    })
 			    ->addColumn("date", function ($sale){
 				    return $sale->created_at;

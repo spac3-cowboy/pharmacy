@@ -16,6 +16,8 @@ function Right(props) {
     let [vat_amount, setVatAmount] = useState(0);
     let [isVatOn, toggleIsVatOn] = useState(true);
 
+    let [fullScreen, toggleFullScreen] = useState(false);
+
     let flat_discount = useRef(0);
 
 
@@ -134,6 +136,37 @@ function Right(props) {
 
     }
 
+    function ToggleFullscreen() {
+        toggleFullScreen(!fullScreen);
+        if ( fullScreen ) {
+            let elem = document.documentElement;
+            if (elem.requestFullscreen) {
+                elem.requestFullscreen();
+            } else if (elem.webkitRequestFullscreen) { /* Safari */
+                elem.webkitRequestFullscreen();
+            } else if (elem.msRequestFullscreen) { /* IE11 */
+                elem.msRequestFullscreen();
+            }
+        } else {
+            // Check if the browser supports the Fullscreen API
+            if (document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement || document.msFullscreenElement) {
+                // Exit full screen mode
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                } else if (document.mozCancelFullScreen) {
+                    document.mozCancelFullScreen();
+                } else if (document.webkitExitFullscreen) {
+                    document.webkitExitFullscreen();
+                } else if (document.msExitFullscreen) {
+                    document.msExitFullscreen();
+                }
+            } else {
+                // The document is not in full screen mode
+                console.log("Document is not in full screen.");
+            }
+        }
+    }
+
     return (
         <>
             <div id="right">
@@ -161,6 +194,10 @@ function Right(props) {
                             Sales <i className="uil uil-money-withdrawal"></i>
                         </button>
                     </a>
+
+                    <button className="btn bg-white text-dark" title={"Enter Full Screen"}>
+                        <i className="uil uil-focus" onClick={ToggleFullscreen}></i>
+                    </button>
                 </div>
                 <div id="cash-register">
                     <div id="added-product-list-container">
@@ -190,7 +227,6 @@ function Right(props) {
                                                 <Switch
                                                     checkedChildren={<CheckOutlined />}
                                                     unCheckedChildren={<CloseOutlined />}
-                                                    defaultChecked
                                                     onChange={()=> { toggleIsVatOn(!isVatOn); recalculate() }}
                                                 />
                                             </Space>

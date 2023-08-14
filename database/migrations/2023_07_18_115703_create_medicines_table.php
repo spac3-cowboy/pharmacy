@@ -20,23 +20,19 @@ return new class extends Migration
             $table->double("price");
             $table->double("manufacturing_price");
             $table->string("strength");
-            $table->string("image");
+            //$table->string("image");
             $table->boolean("globally_visible")->default(false);
             $table->unsignedBigInteger("category_id");
-            $table->unsignedBigInteger("manufacturer_id");
             $table->unsignedBigInteger("unit_id");
 
             $table->foreign("category_id")
-                ->references("id")
-                ->on("categories");
+	                ->references("id")
+	                ->on("categories");
 
-            $table->foreign("manufacturer_id")
-                ->references("id")
-                ->on("manufacturers");
 
             $table->foreign("unit_id")
-                ->references("id")
-                ->on("units");
+	                ->references("id")
+	                ->on("units");
 
             $table->softDeletes();
             $table->timestamps();

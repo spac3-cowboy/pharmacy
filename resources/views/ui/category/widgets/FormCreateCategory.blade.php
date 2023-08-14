@@ -16,12 +16,12 @@
                 <h4 class="card-title">Add Category</h4>
             </div>
             <div class="card-body">
-                <form class="form" action="{{ route('categories.store') }}" method="POST">
+                <form class="form" action="{{ route('categories.store') }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     <div class="col-12">
                         <div class="mb-1">
                             <label class="form-label" for="first-name-column">Category Name</label>
-                            <input type="text" id="last-name-column" class="form-control" placeholder="CategoryName" name="name" required="true" >
+                            <input type="text" id="name" class="form-control form-control-sm" placeholder="CategoryName" name="name" required="true" >
                         </div>
                     </div>
                     <div class="col-12 mt-3 text-end">

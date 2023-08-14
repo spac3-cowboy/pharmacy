@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Tenant;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateTenantRequest;
+use App\Http\Requests\Tenant\UpdateTenantRequest;
 use App\Models\Category\Category;
 use App\Models\Manufacturer\Manufacturer;
 use App\Models\Medicine\Medicine;
@@ -13,6 +14,7 @@ use App\Models\Sale\Sale;
 use App\Models\Setting\Setting;
 use App\Models\Tenant\Tenant;
 use App\Models\User;
+use App\Models\Vendor\Vendor;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -45,11 +47,7 @@ class TenantContoller extends Controller
                     return "
                             <a href=\"$showUrl\" class=\"action-icon\"> <i class=\"mdi mdi-eye\"></i></a>
                             <a href=\"$editUrl\" class=\"action-icon\"> <i class=\"mdi mdi-square-edit-outline\"></i></a>
-                            <form class=\"d-inline-block\" id=\"tenant-delete-$tenant->id\" action=\"$destroyRoute\" method=\"post\">
-                                <input type='hidden' name='_token' value='$csrf_token' >
-                                <input type=\"hidden\" name=\"id\" value=\"$tenant->id\">
-                                <a href=\"javascript:void(0);\" onclick=\"deleteConfirm($tenant->id)\" class=\"action-icon\"> <i class=\"mdi mdi-delete\"></i></a>
-                            </form>";
+                            ";
                 })
                 ->rawColumns(["created_at", "user", "action"])
                 ->make();
@@ -78,8 +76,14 @@ class TenantContoller extends Controller
             "bg"
         ]);
         $userData["password"] = Hash::make($request->get("password"));
-
-        $r = DB::transaction(function () use($userData, $request){
+	
+	    $file = $request->file("tenant_image");
+	    $destinationPath = 'assets/images/';
+	    $filename = Str::random() .".".  $file->getClientOriginalExtension();
+	    $file->move($destinationPath, $filename);
+	    $userData["image"] = $filename;
+		    
+        $r = DB::transaction(function () use($userData, $request, $filename) {
             $user = User::create($userData);
             $tenantData = $request->only([
                 "name",
@@ -91,15 +95,15 @@ class TenantContoller extends Controller
 
             Tenant::create($tenantData);
 			
-	        $file = $request->file("tenant_image");
-	        $destinationPath = 'assets/images/';
-	        $filename = Str::random() .".".  $file->getClientOriginalExtension();
-	        $file->move($destinationPath, $filename);
-			
 			Setting::create([
 				"business_id" => Auth::user()->owned_tenant->id,
 				"key" => "logo",
-				"value" => $filename
+				"value" => "default_site_logo.png"
+			]);
+			Setting::create([
+				"business_id" => Auth::user()->owned_tenant->id,
+				"key" => "vat",
+				"value" => "15"
 			]);
 			
             return true;
@@ -124,6 +128,7 @@ class TenantContoller extends Controller
         $categories = Category::where("business_id", $id)->get();
         $medicines = Medicine::where("business_id", $id)->get();
         $manufacturers = Manufacturer::where("business_id", $id)->get();
+        $vendors = Vendor::where("business_id", $id)->get();
         $stocks = Stock::where("business_id", $id)->get();
         $purchases = Purchase::where("business_id", $id)->get();
         $sales = Sale::where("business_id", $id)->get();
@@ -136,6 +141,7 @@ class TenantContoller extends Controller
             "categories" => $categories,
             "medicines" => $medicines,
             "manufacturers" => $manufacturers,
+            "vendors" => $vendors,
             "stocks" => $stocks,
             "purchases" => $purchases,
             "sales" => $sales,
@@ -148,15 +154,41 @@ class TenantContoller extends Controller
      */
     public function edit(string $id)
     {
-        //
+		$tenant = Tenant::find($id);
+	    return view("ui.tenant.pages.EditTenant", [
+			"tenant" => $tenant
+	    ]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(UpdateTenantRequest $request, string $id)
     {
-        //
+        // update business details
+	    $tenantData = $request->only([
+		    "name",
+		    "address",
+		    "email",
+		    "phone",
+	    ]);
+		$tenant = Tenant::find($id);
+		$tenant->update($tenantData);
+		
+		// updating user data
+	    $userData = $request->only([
+		    "name",
+		    "phone",
+		    "email",
+		    "address",
+		    "bg"
+	    ]);
+		if ( $request->get("password") ) {
+	        $userData["password"] = Hash::make($request->get("password"));
+		}
+	    $user = $tenant->owner->update($userData);
+		
+		return redirect()->route("tenants.index")->with("msg", "Tenant Data Updated Successfully");
     }
 
     /**

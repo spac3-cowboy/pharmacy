@@ -34,6 +34,7 @@ export default function POS() {
 
 
 
+
     return (
         <>
             <Left setCarts={setCarts} stocks={stocks} categories={categories} vendors={vendors} />

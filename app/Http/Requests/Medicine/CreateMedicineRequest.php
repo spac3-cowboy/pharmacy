@@ -24,13 +24,10 @@ class CreateMedicineRequest extends FormRequest
         return [
             "name" => "required|string",
             "generic_name" => "required|string",
-            "shelf" => "required|string",
             "price" => "required|numeric",
             "manufacturing_price" => "required|numeric",
             "strength" => "required|string",
-            "image" => "required|max:2048",
-            "category_id" => "required|numeric",
-            "manufacturer_id" => "required|numeric",
+            "category_id" => "required|numeric"
         ];
     }
 }

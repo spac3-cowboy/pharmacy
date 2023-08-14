@@ -27,7 +27,7 @@
                     <div class="col-md-6 col-12">
                         <div class="mb-1">
                             <label class="form-label" for="first-name-column">Email</label>
-                            <input type="email" id="last-name-column" class="form-control" placeholder="Email" name="email" required="">
+                            <input type="email" id="last-name-column" class="form-control" placeholder="Email" name="email">
                         </div>
                     </div>
                     <div class="col-md-6 col-12">

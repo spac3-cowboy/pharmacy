@@ -65,16 +65,6 @@
                         </div>
 
                         <div class="form-group col-6 my-1">
-                            <label class="form-label" for="first-name-column">
-                                Manufacturer <sup class="text-danger">*</sup>
-                            </label>
-                            <select class="form-select" id="manufacturer" name="manufacturer_id"  required>
-                                @foreach($manufacturers as $manufacturer)
-                                    <option value="{{ $manufacturer->id }}">{{ $manufacturer->name }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <div class="form-group col-6 my-1">
                             <label class="form-label" for="last-name-column">
                                 Batch <sup class="text-danger">*</sup>
                             </label>

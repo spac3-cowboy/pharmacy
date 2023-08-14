@@ -23,13 +23,43 @@
 
         <ul class="topbar-menu d-flex align-items-center gap-3">
 
+            @can("super admin")
             <!-- POS -->
             <li class="d-none d-sm-inline-block">
-                <a class="nav-link" style="font-size: 36px;" href="{{ route('pos') }}">
-                    <i class="uil uil-box"></i>
+                <a class="nav-link" href="{{ route('pos') }}" style="
+                                                font-size: 18px;
+                                                color: white;
+                                                background: #e3580e;
+                                                display: inline-block;
+                                                height: unset;
+                                                padding: 4px 17px;
+                                                border-radius: 34px;
+                                                box-shadow: -3px 3px 5px #ccc;
+                                                border: 1px solid #939393ad;
+                                            ">
+                    POS <i class="uil uil-box"></i>
                 </a>
             </li>
+            @endcan
 
+            @can("admin")
+                <!-- POS -->
+                <li class="d-none d-sm-inline-block">
+                    <a class="nav-link" href="{{ route('pos') }}" style="
+                                            font-size: 18px;
+                                            color: white;
+                                            background: #e3580e;
+                                            display: inline-block;
+                                            height: unset;
+                                            padding: 4px 17px;
+                                            border-radius: 34px;
+                                            box-shadow: -3px 3px 5px #ccc;
+                                            border: 1px solid #939393ad;
+                                        ">
+                        POS <i class="uil uil-box"></i>
+                    </a>
+                </li>
+            @endcan
 
             <li class="d-none d-md-inline-block">
                 <a class="nav-link" href="#" data-toggle="fullscreen">
@@ -40,7 +70,7 @@
             <li class="dropdown">
                 <a class="nav-link dropdown-toggle arrow-none nav-user px-2" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
                     <span class="account-user-avatar">
-                        <img src="/assets/images/users/avatar-1.jpg" alt="user-image" width="32" class="rounded-circle">
+                        <img src="users/{{ auth()->user()->image }}" alt="user-image" width="32" class="rounded-circle">
                     </span>
                     <span class="d-lg-flex flex-column gap-1 d-none">
                         <h5 class="my-0">{{ Auth::user()->name ?? "" }}</h5>
@@ -49,9 +79,13 @@
                 </a>
                 <div class="dropdown-menu dropdown-menu-end dropdown-menu-animated profile-dropdown">
 
+                    <!-- Profile -->
+                    <a href="{{ route('profile') }}" class="dropdown-item">
+                        <i class="mdi mdi-logout me-1"></i>
+                        <span>Profile</span>
+                    </a>
 
-
-                    <!-- item-->
+                    <!-- Log Out -->
                     <a href="javascript:void(0);" class="dropdown-item">
                         <i class="mdi mdi-logout me-1"></i>
                         <form method="post" action="{{ route('auth.logout') }}" style="display: inline;">

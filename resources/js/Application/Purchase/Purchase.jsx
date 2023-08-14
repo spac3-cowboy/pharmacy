@@ -15,6 +15,7 @@ export default function Purchase() {
     let [total, setTotal] = useState(0);
     let [paid, setPiad] = useState(0);
     let [due, setDue] = useState(0);
+    let [manufacturerid, setManufacturerId] = useState(0);
 
     useEffect(()=>{
         axios.get("/dashboard/purchase/get-page-data")
@@ -97,6 +98,19 @@ export default function Purchase() {
         });
         setCartMedicines(tmp);
     }
+    const changePaid = (paid) => {
+        console.log(window.event.target.value)
+        document.querySelector("#paid").value = window.event.target.value
+        setPiad(window.event.target.value);
+        setDue( total - paid );
+        setDue( total - paid );
+    }
+    const payingFull = () => {
+        document.querySelector("#paid").value = total;
+        setPiad(total)
+        setDue( total - paid );
+        setDue( total - paid );
+    }
 
     const updateMedicineCalculations = () => {
         let tmpCartMedicines = cartMedicines.map(cm => {
@@ -126,10 +140,15 @@ export default function Purchase() {
         setDiscount(tmpDiscount);
         setTotal(tmpTotal);
         setPiad(tmpPaid);
+
         setDue(tmpDue);
+
+        window.event.target.value = paid;
     }
     const submit = () => {
 
+
+        if ( !paid && paid != 0 ) return ;
 
         let items = cartMedicines.map(cm => {
             return {
@@ -142,6 +161,7 @@ export default function Purchase() {
                 "flat_discount" : document.querySelector(`#cm-${cm.id} #discount`).value,
                 "batch" : document.querySelector(`#cm-${cm.id} #batch`).value,
                 "vendor_id" : document.querySelector(`#cm-${cm.id} #vendor_id`).value,
+                "manufacturer_id" : manufacturerid
             }
         });
 
@@ -157,9 +177,13 @@ export default function Purchase() {
                 console.log(item.vendor_id)
                 return true;
             }
-
+            if ( item.manufacturer_id == 0 ) {
+                console.log(item.manufacturer_id)
+                return true;
+            }
             return false;
         });
+
 
         if ( allSet ) {
             console.log("all not set")
@@ -167,12 +191,14 @@ export default function Purchase() {
         }
 
         let t = {
+            "manufacturer_id" : manufacturerid,
             "vendor_id" : document.querySelector("#vendor_id").value,
             "purchase_date" : document.querySelector("#purchase_date").value,
             "paid" : paid
         }
         let _token = document.querySelector('meta[name="csrf-token"]').content;
 
+        console.log(t)
         axios.post("/dashboard/purchase/store",{
             "items": items,
             "t": t,
@@ -199,18 +225,6 @@ export default function Purchase() {
         })
     }
 
-    const filterByManufacturer = (e) => {
-        let manufacturer_id = e.value;
-        if ( e.value == -1 ) {
-            setFilteredMedicines( medicines );
-            return;
-        }
-        setFilteredMedicines(
-            medicines.filter(medicine=>{
-                return medicine.manufacturer_id == manufacturer_id
-            })
-        )
-    }
 
     return (
         <div className="row">
@@ -225,33 +239,11 @@ export default function Purchase() {
                         <form className="form" method="POST">
                             <div className="row justify-content-center">
 
-                                <div className="form-group col-5 m-1">
-                                    <label htmlFor="">Date</label>
+                                <div className="form-group col-4 my-2">
+                                    <label htmlFor="">Date<sup className="text-danger">*</sup></label>
                                     <input className="form-control form-control-sm" type="date" name="date" id="purchase_date" />
                                 </div>
-                                <div className="form-group col-5 m-1">
-                                    <label htmlFor="">Manufacturer</label>
-                                    <div className="d-flex">
-                                        {/*<select className="form-select form-select-sm " aria-label="Default select example">*/}
-                                        {/*    <option selected>Select Manufacturer</option>*/}
-                                        {/*    {*/}
-                                        {/*        manufacturers.map((manufacturer,i)=>{*/}
-                                        {/*            return (*/}
-                                        {/*                <option key={i} className="">{ manufacturer.name }</option>*/}
-                                        {/*            )*/}
-                                        {/*        })*/}
-                                        {/*    }*/}
-                                        {/*</select>*/}
-                                        <Select
-                                            id="manufacturers"
-                                            placeholder={"Select Manufacturer"}
-                                            className="w-100"
-                                            options={ manufacturers.map(m => { return { value: m.id, label: m.name } }) }
-                                            onChange={ filterByManufacturer }
-                                        />
-                                    </div>
-                                </div>
-                                <div className="form-group col-10">
+                                <div className="form-group col-7 my-2">
                                     <label htmlFor="">Medicine</label>
                                     <div className="d-flex">
                                         <Select
@@ -259,6 +251,7 @@ export default function Purchase() {
                                             className="w-75"
                                             options={ filteredMedicines.map(m => { return { value: m.id, label: m.name } }) }
                                             onChange={ selectMedicine }
+                                            defaultValue={0}
                                         />
                                         {/*<select id="medicines" onChange={ () => selectMedicine() } className="form-select form-select-sm" aria-label="Default select example ">*/}
                                         {/*    <option selected>Select Medicine</option>*/}
@@ -270,22 +263,23 @@ export default function Purchase() {
                                         {/*        })*/}
                                         {/*    }*/}
                                         {/*</select>*/}
-                                        <button className="btn btn-success mx-2 w-25" style={{ maxHeight: "50px", minWidth: "140px" }}>
+                                        <a href="/dashboard/medicines/create" className="btn btn-success mx-2 w-25" style={{ maxHeight: "50px", minWidth: "140px" }}>
                                             Add New
-                                        </button>
+                                        </a>
                                     </div>
                                 </div>
 
 
-                                <div className="col-lg-12 mt-3" style={{ overflowX: "auto" }}>
+                                <div id="table-container-div" className="col-lg-12 mt-3" style={{ overflowX: "auto", minHeight: "380px" }}>
                                     <table className="table table-striped mb-0">
                                         <thead className="bg-dark text-white">
                                         <tr>
                                             <th>#</th>
                                             <th>Name</th>
                                             <th style={{ minWidth: "200px" }}>Batch</th>
+                                            <th style={{ minWidth: "150px" }}>Manufacturing Date</th>
                                             <th style={{ minWidth: "150px" }}>Expiry Date</th>
-                                            <th style={{ minWidth: "150px" }}>Manu Date</th>
+                                            <th style={{ minWidth: "200px" }}>Manufacturer</th>
                                             <th style={{ minWidth: "200px" }}>Vendor</th>
                                             <th style={{ minWidth: "150px" }}>MRP Per Unit</th>
                                             <th style={{ minWidth: "150px" }}>Buy Price Per Unit</th>
@@ -311,6 +305,18 @@ export default function Purchase() {
                                                         </td>
                                                         <td className={"py-1"}>
                                                             <input className="form-control form-control-sm  p-1" type="date" id="expiry_date" name="expiry_date" />
+                                                        </td>
+                                                        <td>
+                                                            <div className="d-flex">
+                                                                <Select
+                                                                    styles={{zIndex: "2910"}}
+                                                                    id="manufacturer_id"
+                                                                    placeholder={"Select Manufacturer"}
+                                                                    className="w-100"
+                                                                    options={ manufacturers.map(m => { return { value: m.id, label: m.name } }) }
+                                                                    onChange={ (e)=>setManufacturerId(e.value) }
+                                                                />
+                                                            </div>
                                                         </td>
                                                         <td>
                                                             <select defaultValue={0} className="form-select form-select-sm" id="vendor_id" required>
@@ -379,12 +385,9 @@ export default function Purchase() {
                             <tr>
                                 <td className="py-1">Paid</td>
                                 <td className="py-1">
-                                    <input value={paid} className="form-control form-control-sm w-50" type="number" id="paid" name="piad" />
+                                    <input onChange={ () => { changePaid(paid) } } className="form-control form-control-sm w-50" type="number" id="paid" name="piad" />
+                                    <button className="btn btn-success p-0 px-1 m-1" onClick={payingFull}>FULL</button>
                                 </td>
-                            </tr>
-                            <tr>
-                                <td className="py-1">due</td>
-                                <td className="py-1">{ due }</td>
                             </tr>
                             </tbody>
                         </table>
@@ -401,4 +404,6 @@ export default function Purchase() {
         </div>
     )
 }
+
+
 

@@ -4,7 +4,7 @@
             <tr>
                 <th class="all">#</th>
                 <th>Name</th>
-                <th>Manufacturer</th>
+                <th>Bought From</th>
                 <th>Batch</th>
                 <th>Buy Price</th>
                 <th>Selling Price</th>
@@ -102,7 +102,7 @@
                 columns: [
                     { data: 'id', name: 'id' },
                     { data: 'name', name: 'name' },
-                    { data: 'manufacturer', name: 'manufacturer' },
+	                { data: 'bought_from', name: 'bought_from' },
                     { data: 'batch', name: 'batch' },
                     { data: 'buy_price', name: 'buy_price' },
                     { data: 'price', name: 'price' },

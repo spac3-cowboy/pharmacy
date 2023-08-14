@@ -57,8 +57,16 @@ class ManufacturerController extends Controller
     {
         $data = $request->only("name", "phone", "email", "address");
         $data["business_id"] = Auth::user()->owned_tenant->id;
-
-        Manufacturer::create($data);
+	
+	    try
+	    {
+            Manufacturer::create($data);
+		    
+	    }
+		catch (\Exception $exception)
+		{
+			return redirect()->back()->withErrors(["msg" => $exception->getMessage()]);
+		}
 
         return redirect()->route("manufacturers.index");
     }

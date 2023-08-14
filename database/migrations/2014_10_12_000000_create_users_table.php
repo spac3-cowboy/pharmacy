@@ -15,7 +15,8 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('business_id')->nullable();
             $table->string('name');
-            $table->string('email')->unique();
+            $table->string('image')->default("default_avatar.png");
+            $table->string('email')->unique()->nullable();
             $table->string('phone')->unique();
             $table->string('address', 500)->nullable();
             $table->string('bg')->nullable(); // bg = blood group

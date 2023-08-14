@@ -71,13 +71,12 @@ class StockController extends Controller
     {
         $key = $request->get("key");
         $cat_id = $request->get("cat_id");
-        $vendor_id = $request->get("vendor_id");
 
         $stocks = Stock::with(["medicine.category", "manufacturer"])
             ->whereDate("expiry_date", ">", Carbon::today()->toDateString())
             ->where("quantity", ">",     0)
             ->where("business_id", Auth::user()->owned_tenant->id)
-            ->whereHas("medicine", function($query) use($key, $cat_id, $vendor_id) {
+            ->whereHas("medicine", function($query) use($key, $cat_id) {
                 if ( $key ) {
                     $query->where("name", "like", "%$key%");
                 }
@@ -111,8 +110,13 @@ class StockController extends Controller
                     ->addColumn("purchase_date", function ($stock){
                         return $stock->created_at;
                     })
-                    ->addColumn("manufacturer", function ($stock){
-                        return $stock->manufacturer->name;
+                    ->addColumn("bought_from", function ($stock){
+						if ( $stock->manufacturer ) {
+                            return $stock->manufacturer->name;
+						}
+						if ( $stock->vendor ) {
+                            return $stock->manufacturer->name;
+						}
                     })
                     ->addColumn("price", function ($stock){
                         return $stock->mrp;
@@ -128,7 +132,7 @@ class StockController extends Controller
                         'avl_qty',
                         'purchase_date',
                         'price',
-                        'manufacturer',
+                        'bought_from',
                         'emergency',
                         'action'
                     ])
@@ -143,13 +147,12 @@ class StockController extends Controller
 
         $key = $request->get("key");
         $cat_id = $request->get("cat_id");
-        $vendor_id = $request->get("vendor_id");
 
         $stocks = Stock::with(["medicine.category", "manufacturer"])
             ->whereDate("expiry_date", ">", Carbon::today()->toDateString())
             ->where("quantity", "<",     1)
             ->where("business_id", Auth::user()->owned_tenant->id)
-            ->whereHas("medicine", function($query) use($key, $cat_id, $vendor_id) {
+            ->whereHas("medicine", function($query) use($key, $cat_id) {
                 if ( $key ) {
                     $query->where("name", "like", "%$key%");
                 }
@@ -181,9 +184,14 @@ class StockController extends Controller
                 ->addColumn("purchase_date", function ($stock){
                     return $stock->created_at;
                 })
-                ->addColumn("manufacturer", function ($stock){
-                    return $stock->manufacturer->name;
-                })
+	            ->addColumn("bought_from", function ($stock){
+		            if ( $stock->manufacturer ) {
+			            return $stock->manufacturer->name;
+		            }
+		            if ( $stock->vendor ) {
+			            return $stock->manufacturer->name;
+		            }
+	            })
                 ->addColumn("price", function ($stock){
                     return $stock->mrp;
                 })
@@ -195,7 +203,7 @@ class StockController extends Controller
                     'avl_qty',
                     'purchase_date',
                     'price',
-                    'manufacturer',
+                    'bought_from',
                     'action'
                 ])
                 ->make();
@@ -212,13 +220,12 @@ class StockController extends Controller
 
         $key = $request->get("key");
         $cat_id = $request->get("cat_id");
-        $vendor_id = $request->get("vendor_id");
 
         $stocks = Stock::with(["medicine.category", "manufacturer"])
             ->whereDate("expiry_date", "<", Carbon::today()->toDateString())
             ->where("quantity", ">",     0)
             ->where("business_id", Auth::user()->owned_tenant->id)
-            ->whereHas("medicine", function($query) use($key, $cat_id, $vendor_id) {
+            ->whereHas("medicine", function($query) use($key, $cat_id) {
                 if ( $key ) {
                     $query->where("name", "like", "%$key%");
                 }
@@ -250,9 +257,14 @@ class StockController extends Controller
                 ->addColumn("purchase_date", function ($stock){
                     return $stock->created_at;
                 })
-                ->addColumn("manufacturer", function ($stock){
-                    return $stock->manufacturer->name;
-                })
+	            ->addColumn("bought_from", function ($stock){
+		            if ( $stock->manufacturer ) {
+			            return $stock->manufacturer->name;
+		            }
+		            if ( $stock->vendor ) {
+			            return $stock->manufacturer->name;
+		            }
+	            })
                 ->addColumn("price", function ($stock){
                     return $stock->mrp;
                 })
@@ -264,7 +276,7 @@ class StockController extends Controller
                     'avl_qty',
                     'purchase_date',
                     'price',
-                    'manufacturer',
+                    'bought_from',
                     'action'
                 ])
                 ->make();
@@ -276,13 +288,12 @@ class StockController extends Controller
 
         $key = $request->get("key");
         $cat_id = $request->get("cat_id");
-        $vendor_id = $request->get("vendor_id");
 
         $stocks = Stock::with(["medicine.category", "manufacturer"])
             ->whereDate("expiry_date", "<", Carbon::today()->subDays(30)->toDateString())
             ->where("quantity", ">",     0)
             ->where("business_id", Auth::user()->owned_tenant->id)
-            ->whereHas("medicine", function($query) use($key, $cat_id, $vendor_id) {
+            ->whereHas("medicine", function($query) use($key, $cat_id) {
                 if ( $key ) {
                     $query->where("name", "like", "%$key%");
                 }
@@ -314,9 +325,14 @@ class StockController extends Controller
                 ->addColumn("purchase_date", function ($stock){
                     return $stock->created_at;
                 })
-                ->addColumn("manufacturer", function ($stock){
-                    return $stock->manufacturer->name;
-                })
+	            ->addColumn("bought_from", function ($stock){
+		            if ( $stock->manufacturer ) {
+			            return $stock->manufacturer->name;
+		            }
+		            if ( $stock->vendor ) {
+			            return $stock->manufacturer->name;
+		            }
+	            })
                 ->addColumn("price", function ($stock){
                     return $stock->mrp;
                 })
@@ -328,7 +344,7 @@ class StockController extends Controller
                     'avl_qty',
                     'purchase_date',
                     'price',
-                    'manufacturer',
+                    'bought_from',
                     'action'
                 ])
                 ->make();

@@ -4,10 +4,10 @@
     <!-- Brand Logo Light -->
     <a href="/" class="logo logo-light" style="background: #262d36;">
         <span class="logo-lg">
-            <img src="/assets/images/{{ \App\Models\Setting\Setting::key("logo") }}" alt="logo" style="height: 2.5em;">
+            <img src="/assets/images/{{ strlen(\App\Models\Setting\Setting::key("logo")) ? \App\Models\Setting\Setting::key("logo") :  "default_site_logo.png" }}" alt="logo" style="height: 2.5em;">
         </span>
         <span class="logo-sm">
-            <img src="/assets/images/{{ \App\Models\Setting\Setting::key("logo") }}" alt="small logo">
+            <img src="/assets/images/{{ strlen(\App\Models\Setting\Setting::key("logo")) ? \App\Models\Setting\Setting::key("logo") :  "default_site_logo.png" }}" alt="small logo">
         </span>
     </a>
 
@@ -46,31 +46,59 @@
 
             <!-- Tenants -->
             @can("super-admin")
-            <li class="side-nav-item">
-                <a data-bs-toggle="collapse" href="#sidebarTenant" aria-expanded="false" aria-controls="sidebarTenant" class="side-nav-link">
-                    <i class="ri-home-4-fill"></i>
-                    <span> Tenants </span>
-                    <span class="menu-arrow"></span>
-                </a>
-                <div class="collapse" id="sidebarTenant">
-                    <ul class="side-nav-second-level">
-                        <li>
-                            <a href="{{ route('tenants.index') }}">
-                                <i class="mdi mdi-format-list-numbered"></i>
-                                Tenant List
-                            </a>
-                        </li>
-                        <li>
-                            <a href="{{ route('tenants.create') }}">
-                                <i class="mdi mdi-format-list-numbered"></i>
-                                New Tenant
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-            </li>
+                <li class="side-nav-item">
+                    <a data-bs-toggle="collapse" href="#sidebarTenant" aria-expanded="false" aria-controls="sidebarTenant" class="side-nav-link">
+                        <i class="ri-home-4-fill"></i>
+                        <span> Tenants </span>
+                        <span class="menu-arrow"></span>
+                    </a>
+                    <div class="collapse" id="sidebarTenant">
+                        <ul class="side-nav-second-level">
+                            <li>
+                                <a href="{{ route('tenants.index') }}">
+                                    <i class="mdi mdi-format-list-numbered"></i>
+                                    Tenant List
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ route('tenants.create') }}">
+                                    <i class="mdi mdi-format-list-numbered"></i>
+                                    New Tenant
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
             @endcan
 
+            <!-- Medicines -->
+            @can("super-admin")
+                <li class="side-nav-item">
+                    <a data-bs-toggle="collapse" href="#sidebarMedicine" aria-expanded="false" aria-controls="sidebarMedicine" class="side-nav-link">
+                        <i class="ri-home-4-fill"></i>
+                        <span> Medicines </span>
+                        <span class="menu-arrow"></span>
+                    </a>
+                    <div class="collapse" id="sidebarMedicine">
+                        <ul class="side-nav-second-level">
+                            <li>
+                                <a href="{{ route('admin.medicines.index') }}">
+                                    <i class="mdi mdi-format-list-numbered"></i>
+                                    Medicine List
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ route('admin.medicines.create') }}">
+                                    <i class="mdi mdi-format-list-numbered"></i>
+                                    New Medicine
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+            @endcan
+
+            @cannot("super-admin")
             <!-- Dashboard -->
             <li class="side-nav-item">
                 <a href="{{ route('dashboard') }}" class="side-nav-link">
@@ -208,11 +236,11 @@
                             </a>
                         </li>
                         <li>
-                            <a href="{{ route('stocks.emergencystock') }}">
-                                <i class="mdi mdi-format-list-numbered"></i>
-                                Emergency Stock
-                            </a>
-                        </li>
+{{--                            <a href="{{ route('stocks.emergencystock') }}">--}}
+{{--                                <i class="mdi mdi-format-list-numbered"></i>--}}
+{{--                                Emergency Stock--}}
+{{--                            </a>--}}
+{{--                        </li>--}}
                         <li>
                             <a href="{{ route('stocks.outofstock') }}">
                                 <i class="mdi mdi-format-list-numbered"></i>
@@ -390,7 +418,7 @@
                     <span class="menu-arrow"></span>
                 </a>
             </li>
-
+            @endcannot
         </ul>
         <!--- End Sidemenu -->
 

@@ -7,10 +7,13 @@
                     Purchase Date: {{ \Carbon\Carbon::make($purchase->purchase_date)->format("d/m/Y") }}
                 </h5>
                 <h5>
-                    Amount: {{ $purchase->amount }}<small class="fst-italic ">{{ App\Models\Setting\Setting::key("currency") }}</small>
+                    Amount: {{ $purchase->amount }}<small class="fst-italic ">{{ App\Models\Setting\Setting::key("currency_symbol") }}</small>
                 </h5>
                 <h5>
-                    Paid: {{ $purchase->paid }}<small class="fst-italic">{{ App\Models\Setting\Setting::key("currency") }}</small>
+                    Paid: {{ $purchase->paid }}<small class="fst-italic">{{ App\Models\Setting\Setting::key("currency_symbol") }}</small>
+                </h5>
+                <h5>
+                    Due: {{ $purchase->amount - $purchase->paid }}<small class="fst-italic">{{ App\Models\Setting\Setting::key("currency_symbol") }}</small>
                 </h5>
             </div>
         </div>

@@ -35,17 +35,14 @@ class SaleController extends Controller
                     }
                     return "Walkway Customer";
                 })
-                ->addColumn("products", function ($sale){
-                    $items = "";
-                    return $sale->items->reduce(function ($final, $item){
-                        return $final . $item->stock->medicine->name . "<br />";
-                    },"");
-                })
                 ->addColumn("qty", function ($sale){
                     return $sale->total_quantity;
                 })
                 ->addColumn("total", function ($sale){
                     return $sale->total;
+                })
+                ->addColumn("paid", function ($sale){
+                    return $sale->paid;
                 })
                 ->addColumn("date", function ($sale){
                     return $sale->created_at;
@@ -156,14 +153,15 @@ class SaleController extends Controller
 		$sub_total = $total_quantity * $stock->mrp;
 		$flat_discount = 0;
 		
-		$vat = Setting::key("vat") ?? 0;
+		//$vat = Setting::key("vat") ?? 0;
 		// adding vat
-		$grand_total = ($sub_total * ( 1 + ( $vat / 100 ) ));
+		$grand_total = ($sub_total);
 		
 		// subtracting flat discount
 		$grand_total = $grand_total - $flat_discount;
 		
-		$vat_amount = $sub_total * (Setting::key("vat")/100) ;
+		//$vat_amount = $sub_total * ((Setting::key("vat"))/100);
+		$vat_amount = 0;
 		
 		$due = (round($grand_total - $request->paid));
 		// if paid more than billed amount

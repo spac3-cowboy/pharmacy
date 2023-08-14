@@ -27,13 +27,10 @@ class MedicineController extends Controller
             $medicines = Medicine::where("business_id", Auth::user()->owned_tenant->id)->get();
             return DataTables::of($medicines)
                 ->addColumn('image', function ($medicine){
-                    return "<img src='/medicines/$medicine->image' width='80px' height='80px' />";
+                    return "<img src='/category/$medicine->image' width='80px' height='80px' />";
                 })
                 ->addColumn('category', function ($medicine){
                     return $medicine->category->name;
-                })
-                ->addColumn('manufacturer', function ($medicine){
-                    return $medicine->manufacturer->name;
                 })
                 ->addColumn('action', function ($medicine){
 	                $viewUrl = route('medicines.show', ['medicine' => $medicine->id] );
@@ -61,10 +58,14 @@ class MedicineController extends Controller
         $categories = Category::where("business_id", Auth::user()->owned_tenant->id)->get();
         $manufacturers = Manufacturer::where("business_id", Auth::user()->owned_tenant->id)->get();
         $units = Unit::where("business_id", Auth::user()->owned_tenant->id)->get();
+        $medicines = Medicine::where("business_id", Auth::user()->owned_tenant->id)
+	                 ->orWhere("globally_visible", true)
+	                 ->get();
         return view("ui.medicine.pages.CreateMedicine", [
             "categories" => $categories,
             "manufacturers" => $manufacturers,
-	        "units" => $units
+	        "units" => $units,
+	        "medicines" => $medicines
         ]);
     }
 
@@ -73,26 +74,17 @@ class MedicineController extends Controller
      */
     public function store(CreateMedicineRequest $request)
     {
-//		dd($request->all());
-        $data = $request->except(["_token", "batch"]);
-        $data["business_id"] = Auth::user()->owned_tenant->id;
 		
-		$file = $request->file("image");
-	    $destinationPath = 'medicines';
-		$filename = Str::uuid() .".".  $file->getClientOriginalExtension();
-	    $file->move($destinationPath, $filename);
-	
-	    $data["business_id"] = Auth::user()->owned_tenant->id;
-	    $data["image"] = $filename;
-	
-		
-	    try {
+	    try
+	    {
+            $data = $request->except(["_token", "batch"]);
+            $data["business_id"] = Auth::user()->owned_tenant->id;
 			Medicine::create($data);
-	    } catch (\Exception $exception) {
-		    return redirect()->route("medicines.index")->withErrors(["msg" => "Medicine Created Successfully"]);
 	    }
-		
-		
+		catch (\Exception $exception)
+		{
+		    return redirect()->back()->withErrors(["msg" => $exception->getMessage()]);
+	    }
 
         return redirect()->route("medicines.index")->with(["msg" => "Medicine Created Successfully"]);
     }

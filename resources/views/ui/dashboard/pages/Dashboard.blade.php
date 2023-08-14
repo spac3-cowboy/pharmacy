@@ -8,36 +8,45 @@
     <div class="row">
         <div class="col-12">
             <div class="card border shadow-none">
-                <div class="card-header bg-pitla-blue">Reports</div>
-                <div class="card-body px-1 d-flex justify-content-around ">
-                    <div class="card mx-1 p-0 shadow-none border border-danger w-25">
+                <div class="card-body px-1 py-2 d-flex justify-content-start ">
+                    <div style="max-width: 209px;" class="card mx-1 p-0 mb-0 shadow-none border border-danger w-25">
                         <div class="card-body p-1">
-                            <h4>Total Stock</h4>
-                            <strong class="badge badge-secondary-lighten">{{ $stock_medicines }}</strong>
+                            <h4>
+                                <i class="uil uil-coins"></i> Stock
+                            </h4>
+                            <strong class="badge badge-secondary-lighten">In Stock: {{ $stock_medicines }}</strong>
+                            <strong class="badge badge-secondary-lighten">Stock Out: {{ $out_of_stocks->count() }}</strong>
+                            <strong class="badge badge-secondary-lighten">Expired: {{ $expired_stocks->count() }}</strong>
                         </div>
                     </div>
-                    <div class="card mx-1 p-0 shadow-none border border-danger w-25">
+                    <div style="max-width: 209px;" class="card mx-1 p-0 mb-0  shadow-none border border-danger w-25">
                         <div class="card-body p-1">
-                            <h4>Total Sales</h4>
-                            <strong class="badge badge-secondary-lighten">{{ $total_sales }}</strong>
+                            <h4>
+                                <i class="uil uil-money-withdrawal"></i> Sales
+                            </h4>
+                            <strong class="badge badge-secondary-lighten">Today: {{ $total_sales_today }}</strong>
+                            <strong class="badge badge-secondary-lighten">This Week: {{ $total_sales_week }}</strong>
+                            <strong class="badge badge-secondary-lighten">This Month: {{ $total_sales_month }}</strong>
                         </div>
                     </div>
-                    <div class="card mx-1 p-0 shadow-none border border-danger w-25">
+                    <div style="max-width: 209px;" class="card mx-1 p-0 mb-0  shadow-none border border-danger w-25">
                         <div class="card-body p-1">
-                            <h4>Total Prchase</h4>
-                            <strong class="badge badge-secondary-lighten">{{ $total_sales }}</strong>
+                            <h4>
+                                <i class="uil uil-money-insert"></i> Purchase
+                            </h4>
+                            <strong class="badge badge-secondary-lighten">Today: {{ $total_purchase_today }}</strong>
+                            <strong class="badge badge-secondary-lighten">This Week: {{ $total_purchase_week }}</strong>
+                            <strong class="badge badge-secondary-lighten">This Month: {{ $total_purchase_month }}</strong>
                         </div>
                     </div>
-                    <div class="card mx-1 p-0 shadow-none border border-danger w-25">
+                    <div style="max-width: 209px;" class="card mx-1 p-0 mb-0  shadow-none border border-danger w-25">
                         <div class="card-body p-1">
-                            <h4>Expired Stock</h4>
-                            <strong class="badge badge-secondary-lighten">{{ $expired_stocks->count() }}</strong>
-                        </div>
-                    </div>
-                    <div class="card mx-1 p-0 shadow-none border border-danger w-25">
-                        <div class="card-body p-1">
-                            <h4>Out of Stock</h4>
-                            <strong class="badge badge-secondary-lighten">{{ $out_of_stocks->count() }}</strong>
+                            <h4>
+                                <i class="mdi mdi-keyboard-tab-reverse"></i> Returns
+                            </h4>
+                            <strong class="badge badge-secondary-lighten">Today: {{ $total_return_today }}</strong>
+                            <strong class="badge badge-secondary-lighten">This Week: {{ $total_return_week }}</strong>
+                            <strong class="badge badge-secondary-lighten">This Month: {{ $total_return_month }}</strong>
                         </div>
                     </div>
                 </div>

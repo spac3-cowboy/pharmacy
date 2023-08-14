@@ -4,7 +4,8 @@
             <tr>
                 <th class="all">#</th>
                 <th>Name</th>
-                <th>Manufacturer</th>
+                <th>Bought From</th>
+                <th>Purchase Date</th>
                 <th>Batch</th>
                 <th>Buy Price</th>
                 <th>Selling Price</th>
@@ -13,7 +14,6 @@
                 <th>Generic Name</th>
                 <th>Shelf</th>
                 <th>Strength</th>
-                <th>Purchase Date</th>
                 <th>Emergency</th>
                 <th>Manufacturing Date</th>
                 <th>Expiry Date</th>
@@ -99,7 +99,7 @@
                 columns: [
 	                { data: 'id', name: 'id' },
 	                { data: 'name', name: 'name' },
-	                { data: 'manufacturer', name: 'manufacturer' },
+	                { data: 'bought_from', name: 'bought_from' },
 	                { data: 'batch', name: 'batch' },
 	                { data: 'buy_price', name: 'buy_price' },
 	                { data: 'price', name: 'price' },

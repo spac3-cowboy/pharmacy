@@ -32,26 +32,29 @@
         <div class="card shadow-none border">
             <div class="card-body">
                 <ul class="list-group">
-                    <li class="list-group-item">
+                    <li class="list-group-item py-0">
                         Categories: <span class="badge badge-secondary-lighten">{{ $categories->count() }}</span>
 {{--                        <div class="btn text-primary">view</div>--}}
                     </li>
-                    <li class="list-group-item">
+                    <li class="list-group-item py-0">
                         Medicines: <span class="badge badge-secondary-lighten">{{ $medicines->count() }}</span>
                     </li>
-                    <li class="list-group-item">
+                    <li class="list-group-item py-0">
                         Manufacturers: <span class="badge badge-secondary-lighten">{{ $manufacturers->count() }}</span>
                     </li>
-                    <li class="list-group-item">
+                    <li class="list-group-item py-0">
+                        Vendors: <span class="badge badge-secondary-lighten">{{ $vendors->count() }}</span>
+                    </li>
+                    <li class="list-group-item py-0">
                         Stocks: <span class="badge badge-secondary-lighten">{{ $stocks->count() }}</span>
                     </li>
-                    <li class="list-group-item">
+                    <li class="list-group-item py-0">
                         Purchases: <span class="badge badge-secondary-lighten">{{ $purchases->count() }}</span>
                     </li>
-                    <li class="list-group-item">
+                    <li class="list-group-item py-0">
                         Sales: <span class="badge badge-secondary-lighten">{{ $sales->count() }}</span>
                     </li>
-                    <li class="list-group-item">
+                    <li class="list-group-item py-0">
                         Customers: <span class="badge badge-secondary-lighten">{{ $customers->count() }}</span>
                     </li>
                 </ul>

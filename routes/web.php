@@ -35,7 +35,6 @@ Route::get("/uid", function (){
 });
 
 
-Route::get("/login", [AuthController::class, "loginPage"])->name("auth.login");
 Route::get("/login", [AuthController::class, "loginPage"])->name("login");
 Route::post("/login", [AuthController::class, "login"])->name("auth.login.post");
 Route::post("/logout", [AuthController::class, "logout"])->name("auth.logout");
@@ -45,7 +44,8 @@ Route::get("/", [DashboardController::class, "index"])
     ->middleware("auth");
 
 
-Route::group(["prefix" => "dashboard", "middleware" => ["auth"]], function (){
+Route::group(["prefix" => "dashboard", "middleware" => [ "auth" ] ], function () {
+    Route::get("/profile", [AuthController::class, "profile"])->name("profile");
     Route::get("/", [DashboardController::class, "index"])->name("dashboard");
 
     Route::resource('customers', CustomerController::class);
@@ -93,13 +93,14 @@ Route::group(["prefix" => "dashboard", "middleware" => ["auth"]], function (){
 
 	// Returns
 	Route::get("/return", [ReturnController::class, "index"])->name("returns.index");
+	Route::get("/return/create", [ReturnController::class, "create"])->name("returns.create");
+	Route::get("/return/edit", [ReturnController::class, "edit"])->name("returns.edit");
+	Route::get("/return/destroy", [ReturnController::class, "destroy"])->name("returns.destroy");
 	Route::get("/return/search-medicine", [ReturnController::class, "searchMedicine"])->name("returns.search.medicine");
 	Route::get("/return/search-manufacturer", [ReturnController::class, "searchManufacturer"])->name("returns.search.manufacturer");
-	Route::get("/return/create", [ReturnController::class, "create"])->name("returns.create");
 	Route::post("/return/medicine", [ReturnController::class, "returnMedicine"])->name("returns.medicine");
+	Route::get("/return/{id}", [ReturnController::class, "show"])->name("returns.show");
 	
-    // business routes
-    Route::resource("tenants", TenantContoller::class);
 
     // units
     Route::resource("units", UnitController::class);
@@ -128,3 +129,6 @@ Route::group(["prefix" => "dashboard", "middleware" => ["auth"]], function (){
     Route::post('pos/pay', [POSController::class, "pay"]);
 
 });
+
+
+require_once "admin.php";

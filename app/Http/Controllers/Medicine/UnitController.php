@@ -55,10 +55,18 @@ class UnitController extends Controller
      */
     public function store(Request $request)
     {
-        Unit::create([
-            "name" => $request->get("name"),
-            "business_id" => Auth::user()->owned_tenant->id
-        ]);
+	    try
+	    {
+	        Unit::create([
+	            "name" => $request->get("name"),
+	            "business_id" => Auth::user()->owned_tenant->id
+	        ]);
+	    }
+		catch (\Exception $exception)
+		{
+		
+		    return redirect()->back()->withErrors(["msg" => $exception->getMessage()]);
+	    }
 
         return redirect()->route("units.index");
     }

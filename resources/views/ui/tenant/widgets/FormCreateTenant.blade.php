@@ -16,7 +16,7 @@
                 <h4 class="card-title">Create New Tenant</h4>
             </div>
             <div class="card-body">
-                <form class="form" action="{{ route('tenants.store') }}" method="POST">
+                <form class="form" action="{{ route('tenants.store') }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     <div class="row justify-content-around">
                         <div class="card border border-dark p-0 shadow-none col-5">

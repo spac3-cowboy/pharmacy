@@ -7,6 +7,7 @@ use App\Models\Category\Category;
 use App\Models\Medicine\Medicine;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 use Yajra\DataTables\DataTables;
 
 class CategoryController extends Controller
@@ -56,10 +57,21 @@ class CategoryController extends Controller
         $request->validate([
             "name" => "required|string"
         ]);
-        Category::create([
-            "name" => $request->name,
-            "business_id" => Auth::user()->owned_tenant->id
-        ]);
+		
+		
+	    try
+	    {
+		    Category::create([
+			    "name" => $request->name,
+			    "image" => "default_category_image.png",
+			    "business_id" => Auth::user()->owned_tenant->id
+		    ]);
+	    }
+		catch (\Exception $exception)
+		{
+			
+			return redirect()->back()->withErrors(["msg" => $exception->getMessage()]);
+		}
         return redirect()->route("categories.index")->with(["msg" => "Category Created Successfully"]);
     }
 
@@ -88,11 +100,18 @@ class CategoryController extends Controller
         $request->validate([ "name" => "required|string" ]);
 		
 		$category = Category::find($id);
-		if ( $category ) {
-			$category->update([
-				"name" => $request->name
-			]);
-			
+		if ( $category )
+		{
+			try
+			{
+				$category->update([
+					"name" => $request->name
+				]);
+			}
+			catch (\Exception $exception)
+			{
+				return redirect()->back()->withErrors(["msg" => $exception->getMessage()]);
+			}
 			return redirect()->route("categories.index")->with(["msg" => "success"]);
 		}
 		return back()->withErrors(["msg" => "success"]);
