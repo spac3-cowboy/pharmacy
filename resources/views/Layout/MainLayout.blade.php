@@ -99,7 +99,7 @@
         <div class="content mt-2">
             <div class="container-fluid">
                 <div class="row justify-content-center">
-                    <div class="col-11">
+                    <div class="col-lg-11 col-sm-12">
                         @yield("main")
                     </div>
                 </div>

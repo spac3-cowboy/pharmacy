@@ -193,7 +193,8 @@ class ReportController extends Controller
 
             $query = SaleItem::with(["stock.medicine"])
                     ->where("business_id", Auth::user()->owned_tenant->id);
-            if ( $request->exists("from") || $request->exists("to") ) {
+            if ( $request->exists("from") || $request->exists("to") )
+			{
                 $query->whereBetween('created_at', [$from, $to]);
             }
 
@@ -222,13 +223,10 @@ class ReportController extends Controller
                 ->addColumn('category', function ($medicine){
                     return $medicine->category->name;
                 })
-                ->addColumn('manufacturer', function ($medicine){
-                    return $medicine->manufacturer->name;
-                })
                 ->addColumn('image', function ($medicine){
                     return "<img src='/$medicine->image' alt='Thumbnail'>";
                 })
-                ->rawColumns(['image', 'sales', 'sold_amount', 'category', 'manufacturer'])
+                ->rawColumns(['image', 'sales', 'sold_amount', 'category'])
                 ->with([
                     "total_sale_amount" => $total_sale_amount
                 ])

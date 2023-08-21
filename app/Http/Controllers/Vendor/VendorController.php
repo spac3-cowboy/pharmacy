@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Vendor;
 
 use App\Http\Controllers\Controller;
 use App\Models\Manufacturer\Manufacturer;
+use App\Models\Purchase\PurchaseItem;
 use App\Models\Vendor\Vendor;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -19,16 +20,20 @@ class VendorController extends Controller
 
         if ( $request->ajax() ) {
             $vendors = Vendor::where("business_id", Auth::user()->owned_tenant->id)->get();
+
             return DataTables::of($vendors)
                 ->addColumn('purchases', function ($vendor){
-                    return $vendor->purchases->count();
+					$purchaseItems = PurchaseItem::where("vendor_id", $vendor->id)->get();
+                    return $purchaseItems->count();
                 })
                 ->addColumn('action', function ($vendor) {
 	                $viewUrl = route('vendors.show', ['vendor' => $vendor->id]);
 	                $editUrl = route('vendors.edit', ['vendor' => $vendor->id]);
 	                $destroyRoute = route('vendors.destroy', ['vendor' => $vendor->id]);
 	                $csrf_token = csrf_token();
-	                if ($vendor->purchases->count() < 1){
+					$purchaseItems = PurchaseItem::where("vendor_id", $vendor->id)->get();
+	                if ($purchaseItems->count() < 1)
+					{
 		                return "<a href=\"$viewUrl\" class=\"action-icon\"> <i class=\"ri-eye-fill\"></i></a>
 								<a href=\"$editUrl\" class=\"action-icon\"> <i class=\"mdi mdi-square-edit-outline\"></i></a>
 	                            <form class=\"d-inline-block\" id=\"customer-delete-$vendor->id\" action=\"$destroyRoute\" method=\"post\">
@@ -36,7 +41,9 @@ class VendorController extends Controller
 	                                <input type=\"hidden\" name=\"id\" value=\"$vendor->id\">
 	                                <a href=\"javascript:void(0);\" onclick=\"deleteConfirm($vendor->id)\" class=\"action-icon\"> <i class=\"mdi mdi-delete\"></i></a>
 	                            </form>";
-                    } else {
+                    }
+					else
+					{
 		                return "<a href=\"$editUrl\" class=\"action-icon\"> <i class=\"mdi mdi-square-edit-outline\"></i></a>";
 	                }
                 })
@@ -95,14 +102,14 @@ class VendorController extends Controller
     public function update(Request $request, string $id)
     {
         $vendor = Vendor::find($id);
-		
+
 		$vendor->update([
 			"name" => $request->name,
 			"email" => $request->email,
 			"phone" => $request->phone,
 			"address" => $request->address
 		]);
-		
+
 		return redirect()->route("vendors.index");
     }
 

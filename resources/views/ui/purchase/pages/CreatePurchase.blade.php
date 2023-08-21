@@ -24,7 +24,7 @@
 
         /* This rule targets the scrollbar thumb */
         ::-webkit-scrollbar-thumb {
-            background-color: #888; /* Color of the thumb */
+            background-color: #ff8c2c; /* Color of the thumb */
             border-radius: 5px; /* Rounded corners */
         }
 

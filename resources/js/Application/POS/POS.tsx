@@ -30,10 +30,7 @@ export default function POS() {
     // @ts-ignore
     useEffect(()=>{
         renderPage();
-    },[])
-
-
-
+    },[]);
 
     return (
         <>

@@ -22,7 +22,7 @@ class CreateMedicineRequest extends FormRequest
     public function rules(): array
     {
         return [
-            "name" => "required|string",
+            "name" => "required|unique:medicines|string",
             "generic_name" => "required|string",
             "price" => "required|numeric",
             "manufacturing_price" => "required|numeric",

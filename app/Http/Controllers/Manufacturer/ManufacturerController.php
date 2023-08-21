@@ -19,15 +19,15 @@ class ManufacturerController extends Controller
     public function index(Request $request)
     {
 
-        if ( $request->ajax() ) {
+        if ($request->ajax()) {
             $manufacturers = Manufacturer::where("business_id", Auth::user()->owned_tenant->id)->get();
             return DataTables::of($manufacturers)
-                ->addColumn('medicine', function ($manufacturer){
+                ->addColumn('medicine', function ($manufacturer) {
                     return 0;
                 })
-                ->addColumn('action', function ($manufacturer){
-                    $editUrl = route('manufacturers.edit', ['manufacturer' => $manufacturer->id] );
-                    $destroyRoute = route('manufacturers.destroy', ['manufacturer' => $manufacturer->id] );
+                ->addColumn('action', function ($manufacturer) {
+                    $editUrl = route('manufacturers.edit', ['manufacturer' => $manufacturer->id]);
+                    $destroyRoute = route('manufacturers.destroy', ['manufacturer' => $manufacturer->id]);
                     $csrf_token = csrf_token();
                     return "<a href=\"$editUrl\" class=\"action-icon\"> <i class=\"mdi mdi-square-edit-outline\"></i></a>
                             <form class=\"d-inline-block\" id=\"customer-delete-$manufacturer->id\" action=\"$destroyRoute\" method=\"post\">
@@ -57,16 +57,13 @@ class ManufacturerController extends Controller
     {
         $data = $request->only("name", "phone", "email", "address");
         $data["business_id"] = Auth::user()->owned_tenant->id;
-	
-	    try
-	    {
+
+        try {
             Manufacturer::create($data);
-		    
-	    }
-		catch (\Exception $exception)
-		{
-			return redirect()->back()->withErrors(["msg" => $exception->getMessage()]);
-		}
+
+        } catch (\Exception $exception) {
+            return redirect()->back()->withErrors(["msg" => $exception->getMessage()]);
+        }
 
         return redirect()->route("manufacturers.index");
     }

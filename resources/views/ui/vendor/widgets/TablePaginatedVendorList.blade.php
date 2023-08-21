@@ -1,5 +1,5 @@
 <div class="table-responsive">
-    <table class="table table-centered w-100 dt-responsive nowrap" id="manufacturers-datatable">
+    <table class="table table-centered w-100 dt-responsive nowrap text-center" id="manufacturers-datatable">
         <thead class="table-light">
             <tr>
                 <th class="all">

@@ -16,6 +16,9 @@ export default function Purchase() {
     let [paid, setPiad] = useState(0);
     let [due, setDue] = useState(0);
     let [manufacturerid, setManufacturerId] = useState(0);
+    let [selectedManufacturer, setSelectedManufacturer] = useState(null);
+    let [vendorid, setVendorId] = useState(0);
+    let [selectedVendor, setSelectedVendor] = useState(null);
 
     useEffect(()=>{
         axios.get("/dashboard/purchase/get-page-data")
@@ -226,7 +229,17 @@ export default function Purchase() {
     }
 
 
-    return (
+	function resetManu(e) {
+		console.log(e)
+		setManufacturerId(null);
+		setSelectedManufacturer(null);
+	}
+	function resetVen() {
+		setVendorId(null);
+		setSelectedVendor(null);
+	}
+
+	return (
         <div className="row">
             <div className="col-12">
                 <div className="card shadow-none border w-100">
@@ -313,22 +326,25 @@ export default function Purchase() {
                                                                     id="manufacturer_id"
                                                                     placeholder={"Select Manufacturer"}
                                                                     className="w-100"
+																	value={selectedManufacturer}
                                                                     options={ manufacturers.map(m => { return { value: m.id, label: m.name } }) }
-                                                                    onChange={ (e)=>setManufacturerId(e.value) }
+                                                                    onChange={ (e)=>{ setSelectedManufacturer(e); setManufacturerId(e.value); resetVen(e); } }
                                                                 />
                                                             </div>
                                                         </td>
                                                         <td>
-                                                            <select defaultValue={0} className="form-select form-select-sm" id="vendor_id" required>
-                                                                <option>Select Vendor</option>
-                                                                {
-                                                                    vendors.map((vendor,i) => {
-                                                                        return (
-                                                                            <option key={i} className="" value={vendor.id}>{ vendor.name }</option>
-                                                                        )
-                                                                    })
-                                                                }
-                                                            </select>
+
+															<div className="d-flex">
+																<Select
+																	styles={{zIndex: "2910"}}
+																	id="vendor_id"
+																	placeholder={"Select Vendor"}
+																	className="w-100"
+																	options={ vendors.map(v => { return { value: v.id, label: v.name } }) }
+																	value={ selectedVendor }
+																	onChange={ (e)=> { setSelectedVendor(e); setVendorId(e.value); resetManu(e); } }
+																/>
+															</div>
                                                         </td>
                                                         <td className={"py-1"}>
                                                             <input value={cm.mrp} onChange={ () => { changeMrp(cm.id); updateMedicineCalculations() } } className="form-control form-control-sm  p-1" type="number" id="mrp" name="mrp" />

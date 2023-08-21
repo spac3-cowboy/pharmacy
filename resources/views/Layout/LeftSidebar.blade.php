@@ -44,8 +44,8 @@
         <!--- Sidemenu -->
         <ul class="side-nav">
 
-            <!-- Tenants -->
             @can("super-admin")
+            	<!-- Tenants -->
                 <li class="side-nav-item">
                     <a data-bs-toggle="collapse" href="#sidebarTenant" aria-expanded="false" aria-controls="sidebarTenant" class="side-nav-link">
                         <i class="ri-home-4-fill"></i>
@@ -55,13 +55,13 @@
                     <div class="collapse" id="sidebarTenant">
                         <ul class="side-nav-second-level">
                             <li>
-                                <a href="{{ route('tenants.index') }}">
+                                <a href="{{ route('admin.tenants.index') }}">
                                     <i class="mdi mdi-format-list-numbered"></i>
                                     Tenant List
                                 </a>
                             </li>
                             <li>
-                                <a href="{{ route('tenants.create') }}">
+                                <a href="{{ route('admin.tenants.create') }}">
                                     <i class="mdi mdi-format-list-numbered"></i>
                                     New Tenant
                                 </a>
@@ -69,33 +69,75 @@
                         </ul>
                     </div>
                 </li>
-            @endcan
 
-            <!-- Medicines -->
-            @can("super-admin")
-                <li class="side-nav-item">
-                    <a data-bs-toggle="collapse" href="#sidebarMedicine" aria-expanded="false" aria-controls="sidebarMedicine" class="side-nav-link">
-                        <i class="ri-home-4-fill"></i>
-                        <span> Medicines </span>
-                        <span class="menu-arrow"></span>
-                    </a>
-                    <div class="collapse" id="sidebarMedicine">
-                        <ul class="side-nav-second-level">
-                            <li>
-                                <a href="{{ route('admin.medicines.index') }}">
-                                    <i class="mdi mdi-format-list-numbered"></i>
-                                    Medicine List
-                                </a>
-                            </li>
-                            <li>
-                                <a href="{{ route('admin.medicines.create') }}">
-                                    <i class="mdi mdi-format-list-numbered"></i>
-                                    New Medicine
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
-                </li>
+				<!-- Medicines -->
+				<li class="side-nav-item">
+					<a data-bs-toggle="collapse" href="#sidebarMedicine" aria-expanded="false" aria-controls="sidebarMedicine" class="side-nav-link">
+						<i class="ri-home-4-fill"></i>
+						<span> Medicines </span>
+						<span class="menu-arrow"></span>
+					</a>
+					<div class="collapse" id="sidebarMedicine">
+						<ul class="side-nav-second-level">
+							<li>
+								<a href="{{ route('admin.medicines.index') }}">
+									<i class="mdi mdi-format-list-numbered"></i>
+									Medicine List
+								</a>
+							</li>
+							<li>
+								<a href="{{ route('admin.medicines.create') }}">
+									<i class="mdi mdi-format-list-numbered"></i>
+									New Medicine
+								</a>
+							</li>
+						</ul>
+					</div>
+				</li>
+
+				<!-- Notice -->
+				<li class="side-nav-item">
+					<a data-bs-toggle="collapse" href="#sidebarNotice" aria-expanded="false" aria-controls="sidebarNotice" class="side-nav-link">
+						<i class="ri-home-4-fill"></i>
+						<span> Notices </span>
+						<span class="menu-arrow"></span>
+					</a>
+					<div class="collapse" id="sidebarNotice">
+						<ul class="side-nav-second-level">
+							<li>
+								<a href="{{ route('admin.notices.index') }}">
+									<i class="mdi mdi-format-list-numbered"></i>
+									Notice List
+								</a>
+							</li>
+							<li>
+								<a href="{{ route('admin.notices.create') }}">
+									<i class="mdi mdi-format-list-numbered"></i>
+									New Notice
+								</a>
+							</li>
+						</ul>
+					</div>
+				</li>
+
+				<!-- Settings -->
+				<li class="side-nav-item">
+					<a data-bs-toggle="collapse" href="#sidebarSettings" aria-expanded="false" aria-controls="sidebarSettings" class="side-nav-link">
+						<i class="ri-home-4-fill"></i>
+						<span> Settings </span>
+						<span class="menu-arrow"></span>
+					</a>
+					<div class="collapse" id="sidebarSettings">
+						<ul class="side-nav-second-level">
+							<li>
+								<a href="{{ route('admin.settings.index') }}">
+									<i class="mdi mdi-format-list-numbered"></i>
+									All Settings
+								</a>
+							</li>
+						</ul>
+					</div>
+				</li>
             @endcan
 
             @cannot("super-admin")

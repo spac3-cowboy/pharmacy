@@ -8,7 +8,6 @@
                 <th>Generic Name</th>
                 <th>price</th>
                 <th>Category</th>
-                <th>Manufacturer</th>
                 <th>Sales</th>
                 <th>Sold Amount</th>
             </tr>
@@ -104,7 +103,6 @@
                     {data: 'generic_name', name: 'generic_name'},
                     {data: 'price', name: 'price'},
                     {data: 'category', name: 'category'},
-                    {data: 'manufacturer', name: 'manufacturer'},
                     {data: 'sale', name: 'sales'},
                     {data: 'sold_amount', name: 'sold_amount'}
                 ],
@@ -120,7 +118,6 @@
             });
         });
     </script>
-
 @endsection
 
 

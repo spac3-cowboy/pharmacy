@@ -24,7 +24,8 @@ class PurchaseController extends Controller
     {
         $purchases = Purchase::where("business_id", Auth::user()->owned_tenant->id)->get();
 
-        if ( $request->ajax() ) {
+        if ( $request->ajax() )
+		{
             return DataTables::of($purchases)
                     ->addColumn("medicines", function ($purchase) {
                         return $purchase->items->reduce(function ($total, $item, $i){
@@ -83,7 +84,7 @@ class PurchaseController extends Controller
 			                "paid" => $paid,
 			                "business_id" => Auth::user()->owned_tenant->id
 			            ]);
-			
+
             foreach ($items as $item)
             {
                 $purchaseItem = PurchaseItem::create([
@@ -92,16 +93,16 @@ class PurchaseController extends Controller
 				                    "batch" => $item["batch"],
 				                    "quantity" => $item["quantity"],
 				                    "manufacturing_date" => $item["manufacturing_date"],
-				                    "manufacturer_id" => $item["manufacturer_id"],
-				                    "vendor_id" => $item["vendor_id"],
+				                    "manufacturer_id" => $item["manufacturer_id"] ?? null,
+				                    "vendor_id" => $item["vendor_id"] ?? null,
 				                    "expiry_date" => $item["expiry_date"],
 				                    "mrp" => $item["mrp"],
 				                    "buy_price" => $item["buy_price"],
 				                    "flat_discount" => $item["flat_discount"],
 				                    "business_id" => Auth::user()->owned_tenant->id
 				                ]);
-				
-				
+
+
                 $batch = $item["batch"];
                 $cost = $item["quantity"] * $item["buy_price"];
                 $tmpStock = Stock::where("batch", $batch)->first();
@@ -192,5 +193,5 @@ class PurchaseController extends Controller
             "medicines" => $medicines
         ];
     }
-	
+
 }
