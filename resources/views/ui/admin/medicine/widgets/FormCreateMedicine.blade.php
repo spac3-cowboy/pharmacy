@@ -1,3 +1,4 @@
+
 <div class="row">
     <div class="col-12">
         <div class="card shadow-none border">
@@ -69,6 +70,16 @@
                                 @endforeach
                             </select>
                         </div>
+
+						<div class="form-group col-12 my-1">
+							<label class="form-label" for="first-name-column">
+								Accessible To Tenants?<sup class="text-danger">*</sup>
+							</label>
+							<select style="padding: 10px" class="form-select" id="globally_visible" name="globally_visible"  required>
+								<option value="1" selected>Yes</option>
+								<option value="0">No</option>
+							</select>
+						</div>
 
                         <div class="form-group col-12 mt-3 text-end">
                         <button type="submit" class="btn btn-primary me-1 waves-effect waves-float waves-light">Submit</button>

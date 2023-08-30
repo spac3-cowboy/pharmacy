@@ -19,6 +19,7 @@ Route::group([
 		// business routes
 		Route::resource("tenants", TenantContoller::class);
 		Route::post("tenants/update/{tenant}", [TenantContoller::class, "update"])->name("tenants.update");
+		Route::post("tenants/store", [TenantContoller::class, "store"])->name("tenants.store");
 
 		Route::get("medicines", [MedicineController::class, "index"])->name("medicines.index");
 		Route::get("medicines/create", [MedicineController::class, "create"])->name("medicines.create");

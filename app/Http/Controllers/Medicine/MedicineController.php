@@ -21,7 +21,7 @@ class MedicineController extends Controller
 	 */
 	public function index(Request $request)
 	{
-		
+
 		if ($request->ajax())
 		{
 			$medicines = Medicine::where("business_id", Auth::user()->owned_tenant->id)->get();
@@ -49,7 +49,7 @@ class MedicineController extends Controller
 		}
 		return view("ui.medicine.pages.PaginatedMedicineList");
 	}
-	
+
 	/**
 	 * Show the form for creating a new resource.
 	 */
@@ -59,8 +59,9 @@ class MedicineController extends Controller
 		$manufacturers = Manufacturer::where("business_id", Auth::user()->owned_tenant->id)->get();
 		$units = Unit::where("business_id", Auth::user()->owned_tenant->id)->get();
 		$medicines = Medicine::where("business_id", Auth::user()->owned_tenant->id)
-			->orWhere("globally_visible", true)
-			->get();
+								->orWhere("globally_visible", true)
+								->get();
+
 		return view("ui.medicine.pages.CreateMedicine", [
 			"categories" => $categories,
 			"manufacturers" => $manufacturers,
@@ -68,26 +69,36 @@ class MedicineController extends Controller
 			"medicines" => $medicines
 		]);
 	}
-	
+
 	/**
 	 * Store a newly created resource in storage.
 	 */
 	public function store(CreateMedicineRequest $request)
 	{
-		
+
 		try
 		{
 			$data = $request->except(["_token", "batch"]);
 			$data["business_id"] = Auth::user()->owned_tenant->id;
+			// checking if medicine already exists in the db
+			$exists = Medicine::where([
+				"business_id" => $data["business_id"],
+				"name" => $request->name
+			])->first();
+			if ( $exists )
+			{
+				return redirect()->back()->withErrors(["msg" => "Medicine Name Already Taken" ]);
+			}
 			Medicine::create($data);
-		} catch (\Exception $exception)
+		}
+		catch (\Exception $exception)
 		{
 			return redirect()->back()->withErrors(["msg" => $exception->getMessage()]);
 		}
-		
+
 		return redirect()->route("medicines.index")->with(["msg" => "Medicine Created Successfully"]);
 	}
-	
+
 	/**
 	 * Display the specified resource.
 	 */
@@ -105,7 +116,7 @@ class MedicineController extends Controller
 			"medicine" => $medicine
 		]);
 	}
-	
+
 	/**
 	 * Show the form for editing the specified resource.
 	 */
@@ -122,7 +133,7 @@ class MedicineController extends Controller
 			"units" => $units
 		]);
 	}
-	
+
 	/**
 	 * Update the specified resource in storage.
 	 */
@@ -130,12 +141,12 @@ class MedicineController extends Controller
 	{
 		$medicine = Medicine::find($id);
 		$data = $request->only(["name", "generic_name", "shelf", "price", "manufacturing_price", "strength", "category_id", "manufacturer_id", "unit_id"]);
-		
+
 		$medicine->update($data);
-		
+
 		return redirect()->route("medicines.index");
 	}
-	
+
 	/**
 	 * Remove the specified resource from storage.
 	 */

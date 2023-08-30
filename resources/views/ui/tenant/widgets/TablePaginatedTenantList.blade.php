@@ -88,7 +88,7 @@
 	            ],
                 processing: true,
                 serverSide: true,
-                ajax: "{{ route('tenants.index') }}",
+                ajax: "{{ route('admin.tenants.index') }}",
                 columns: [
                     { data: 'id', name: 'id' },
                     { data: 'id', name: 'id' },

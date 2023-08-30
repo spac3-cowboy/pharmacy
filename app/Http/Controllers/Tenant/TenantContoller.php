@@ -40,9 +40,9 @@ class TenantContoller extends Controller
                     return $tenant->owner->name;
                 })
                 ->addColumn('action', function ($tenant) {
-                    $showUrl = route('tenants.show', [ 'tenant' => $tenant->id ] );
-                    $editUrl = route('tenants.edit', [ 'tenant' => $tenant->id ] );
-                    $destroyRoute = route('tenants.destroy', [ 'tenant' => $tenant->id] );
+                    $showUrl = route('admin.tenants.show', [ 'tenant' => $tenant->id ] );
+                    $editUrl = route('admin.tenants.edit', [ 'tenant' => $tenant->id ] );
+                    $destroyRoute = route('admin.tenants.destroy', [ 'tenant' => $tenant->id] );
                     $csrf_token = csrf_token();
                     return "
                             <a href=\"$showUrl\" class=\"action-icon\"> <i class=\"mdi mdi-eye\"></i></a>
@@ -76,13 +76,13 @@ class TenantContoller extends Controller
             "bg"
         ]);
         $userData["password"] = Hash::make($request->get("password"));
-	
+
 	    $file = $request->file("tenant_image");
 	    $destinationPath = 'assets/images/';
 	    $filename = Str::random() .".".  $file->getClientOriginalExtension();
 	    $file->move($destinationPath, $filename);
 	    $userData["image"] = $filename;
-		    
+
         $r = DB::transaction(function () use($userData, $request, $filename) {
             $user = User::create($userData);
             $tenantData = $request->only([
@@ -94,7 +94,7 @@ class TenantContoller extends Controller
             $tenantData["user_id"] = $user->id;
 
             Tenant::create($tenantData);
-			
+
 			Setting::create([
 				"business_id" => Auth::user()->owned_tenant->id,
 				"key" => "logo",
@@ -105,12 +105,12 @@ class TenantContoller extends Controller
 				"key" => "vat",
 				"value" => "15"
 			]);
-			
+
             return true;
         });
 
         if ( $r ) {
-            return redirect()->route("tenants.index")->with([
+            return redirect()->route("admin.tenants.index")->with([
                 "msg" => "New Tenant Created"
             ]);
         }
@@ -174,7 +174,7 @@ class TenantContoller extends Controller
 	    ]);
 		$tenant = Tenant::find($id);
 		$tenant->update($tenantData);
-		
+
 		// updating user data
 	    $userData = $request->only([
 		    "name",
@@ -187,7 +187,7 @@ class TenantContoller extends Controller
 	        $userData["password"] = Hash::make($request->get("password"));
 		}
 	    $user = $tenant->owner->update($userData);
-		
+
 		return redirect()->route("tenants.index")->with("msg", "Tenant Data Updated Successfully");
     }
 

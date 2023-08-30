@@ -36,7 +36,7 @@
                         </div>
 
                         <div class="form-group col-6 my-1">
-                            <label class="form-label" for="first-name-column">Manufacturing Price <sup class="text-danger">*</sup></label>
+                            <label class="form-label" for="first-name-column">Buying Price <sup class="text-danger">*</sup></label>
                             <input type="number" min="0.01" step="0.01" id="manufacturing_price" class="form-control" placeholder="Manufacturing Price" name="manufacturing_price" required>
                         </div>
 
@@ -96,11 +96,19 @@
     <script src="{{ asset('assets/vendor/select2/js/select2.min.js') }}"></script>
 
     <script type="text/javascript">
-        const medicines = {!! "[" . $medicines->reduce(function ($total, $m){ return '"' . $m->name . '" ,' . $total; }, "]") !!};
+        const medicines = {!! "[" . $medicines->reduce(function ($total, $m) { return '"' . $m->name . '" ,' . $total; }, "]") !!};
         const medicines_generic_names = {!! "[" . $medicines->reduce(function ($total, $m){ return '"' . $m->generic_name . '" ,' . $total; }, "]") !!};
-	    $(document).ready(function() {
+        const medicines_generic_pair = {!! "[" . $medicines->reduce(function ($total, $m){ return ' { "generic_name": "' . $m->generic_name . '", "name" : "'. $m->name .'" } ,' . $total; }, "]") !!};
+
+		$(document).ready(function() {
 		    $( "#name" ).autocomplete({
-			    source: medicines
+			    source: medicines,
+				select: function(event, ui) {
+					// Access the selected item's value
+					let name = ui.item.value;
+					let generic_name = medicines_generic_pair.find(mgp => mgp.name == name)?.generic_name;
+					$( "#generic_name" ).val(generic_name);
+				}
 		    });
 		    $( "#generic_name" ).autocomplete({
 			    source: [...new Set(medicines_generic_names)]

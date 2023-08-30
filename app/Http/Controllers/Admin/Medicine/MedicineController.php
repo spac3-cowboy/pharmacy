@@ -4,11 +4,14 @@ namespace App\Http\Controllers\Admin\Medicine;
 
 use App\Http\Controllers\Controller;
 use App\Models\Category\Category;
+use App\Models\GlobalMedicine;
 use App\Models\Manufacturer\Manufacturer;
 use App\Models\Medicine\Medicine;
 use App\Models\Medicine\Unit;
+use App\Models\Tenant\Tenant;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\DataTables;
 
 class MedicineController extends Controller
@@ -18,7 +21,7 @@ class MedicineController extends Controller
      */
     public function index(Request $request)
     {
-	
+
 	    if ( $request->ajax() )
 	    {
 		    $medicines = Medicine::all();
@@ -69,7 +72,41 @@ class MedicineController extends Controller
      */
     public function store(Request $request)
     {
-		
+		$result = DB::transaction(function () use($request) {
+			$gm = GlobalMedicine::create([
+				"name" => $request->name,
+				"generic_name" => $request->generic_name,
+				"shelf" => $request->shelf ?? null,
+				"price" => $request->price,
+				"manufacturing_price" => $request->manufacturing_price,
+				"strength" => $request->strength,
+				"category_id" => $request->category_id,
+				"unit_id" => $request->unit_id,
+				"globally_visible" => $request->globally_visible
+			]);
+			if( $request->globally_visible )
+			{
+				Tenant::all()
+					->each(function ($tenant) use($request, $gm) {
+						Medicine::create([
+							"name" => $request->name,
+							"generic_name" => $request->generic_name,
+							"shelf" => $request->shelf ?? null,
+							"price" => $request->price,
+							"manufacturing_price" => $request->manufacturing_price,
+							"strength" => $request->strength,
+							"category_id" => $request->category_id,
+							"unit_id" => $request->unit_id,
+							"global_medicine_id" => $gm->id,
+							"business_id" => $tenant->id
+						]);
+					});
+			}
+
+			return true;
+		});
+
+		return back()->with("Medicine Created");
     }
 
     /**

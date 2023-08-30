@@ -14,9 +14,10 @@ return new class extends Migration
         Schema::create('medicines', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('business_id');
-            $table->string("name")->unique();
+            $table->unsignedBigInteger('global_medicine_id')->nullable();
+            $table->string("name");
             $table->string("generic_name");
-            $table->string("shelf");
+            $table->string("shelf")->nullable();
             $table->double("price");
             $table->double("manufacturing_price");
             $table->string("strength");
