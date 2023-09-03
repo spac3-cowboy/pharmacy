@@ -73,21 +73,22 @@ class StockController extends Controller
         $cat_id = $request->get("cat_id");
 
         $stocks = Stock::with(["medicine.category", "manufacturer"])
-            ->whereDate("expiry_date", ">", Carbon::today()->toDateString())
-            ->where("quantity", ">",     0)
-            ->where("business_id", Auth::user()->owned_tenant->id)
-            ->whereHas("medicine", function($query) use($key, $cat_id) {
-                if ( $key ) {
-                    $query->where("name", "like", "%$key%");
-                }
-                if ( $cat_id ) {
-                    $query->where("category_id", $cat_id);
-                }
-            })
-            ->get();
+						->whereDate("expiry_date", ">", Carbon::today()->toDateString())
+						->where("quantity", ">",     0)
+						->where("business_id", Auth::user()->owned_tenant->id)
+						->whereHas("medicine", function($query) use($key, $cat_id) {
+							if ( $key ) {
+								$query->where("name", "like", "%$key%");
+							}
+							if ( $cat_id ) {
+								$query->where("category_id", $cat_id);
+							}
+						})
+						->get();
 
 
-        if ( $request->ajax() ) {
+        if ( $request->ajax() )
+		{
             return DataTables::of($stocks)
                     ->addColumn("name", function ($stock){
                         return $stock->medicine->name;
@@ -351,8 +352,8 @@ class StockController extends Controller
         }
         return view("ui.stock.pages.PaginatedToBeExpiredStock");
     }
-	
-	
+
+
 	public function transferPage()
 	{
 		return view("ui.stock.pages.Transfer");

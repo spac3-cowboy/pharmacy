@@ -55,7 +55,7 @@ class ManufacturerController extends Controller
      */
     public function store(CreateManufacturerRequest $request)
     {
-        $data = $request->only("name", "phone", "email", "address");
+        $data = $request->only("name", "phone", "address");
         $data["business_id"] = Auth::user()->owned_tenant->id;
 
         try {

@@ -10,6 +10,7 @@ use App\Models\Sale\SaleItem;
 use App\Models\Setting\Setting;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\DataTables;
 
 class ReportController extends Controller
@@ -245,43 +246,57 @@ class ReportController extends Controller
 
         if ( $request->ajax() )
         {
-            $query = SaleItem::with(["stock.medicine"])
-                    ->where("business_id", Auth::user()->owned_tenant->id);
-            if ( $request->exists("from") || $request->exists("to") )
-            {
-                $query->whereBetween('created_at', [$from, $to]);
-            }
+			$sales = DB::table('sales')
+						->select(DB::raw('DATE(created_at) as d'), DB::raw('SUM(grand_total) as total'))
+						->whereBetween('created_at', [$from, $to])
+						->groupBy('d')
+						->get();
+			$salesMapByDate = [];
+			$sales->each(function ($sale) use(&$salesMapByDate) {
+				$salesMapByDate[$sale->d] = $sale->total;
+			});
 
-            $medicines = $query->get();
-            $medicines = $medicines->map(function ($si) {
-                                $si->stock->medicine["grand_total"] = $si->sale->grand_total;
-                                return $si->stock->medicine;
-                            })
-                            ->groupBy("id")
-                            ->map(function ($si) {
-                                $si[0]["sale"] = $si->count();
-                                $si[0]["sold_amount"] = $si[0]->grand_total;
-                                return $si[0];
-                            });
-            $sold_amount = $medicines->reduce(function ($total, $medicine) {
-				                return $medicine->sold_amount + $total;
-				            }) . $currency_symbol;
+			$purchases = Purchase::selectRaw('DATE(created_at) as d, SUM(amount) as total')
+								->whereBetween('created_at', [$from, $to])
+								->groupBy('d')
+								->get();
+			$purchasesMapByDate = [];
+			$purchases->each(function ($purchase) use(&$purchasesMapByDate) {
+				$purchasesMapByDate[$purchase->d] = $purchase->total;
+			});
 
-            return DataTables::of($medicines)
-	                ->addColumn('date', function ($medicine) {
-	                    return $medicine->sale;
-	                })
-	                ->addColumn('purchase_amount', function ($medicine) use($currency_symbol) {
-	                    return $medicine->sold_amount . $currency_symbol;
-	                })
-	                ->addColumn('sold_amount', function ($medicine) use($currency_symbol) {
-	                    return $medicine->sold_amount . $currency_symbol;
-	                })
-	                ->rawColumns(['month', 'sold_amount', 'purchase_amount'])
-	                ->with([
-	                    "sold_amount" => $sold_amount
-	                ])
-	                ->make();
+			$allDates = array_unique(array_merge(array_keys($salesMapByDate), array_keys($purchasesMapByDate)));
+
+			$allDates = collect($allDates)->map(function ($date, $i) use($salesMapByDate, $purchasesMapByDate) {
+				return [
+					"id" => $i + 1,
+					"date" => $date,
+					"purchase" => $purchasesMapByDate[$date] ?? 0,
+					"sold" => $salesMapByDate[$date] ?? 0
+				];
+			});
+
+            $total_sold_amount = collect($allDates)->reduce(function ($total, $date){ return $total + $date["purchase"]; });
+
+			$total_purchase_amount = collect($allDates)->reduce(function ($total, $date){ return $total + $date["sold"]; });
+
+            return DataTables::of($allDates)
+							->addColumn('date', function ($date) {
+								return $date["date"];
+							})
+							->addColumn('purchase_amount', function ($date) use($currency_symbol) {
+								return $date["purchase"];
+							})
+							->addColumn('sold_amount', function ($date) use($currency_symbol) {
+								return $date["sold"];
+							})
+							->rawColumns(['date', 'sold_amount', 'purchase_amount'])
+							->with([
+								"total_sold_amount" => $total_sold_amount,
+								"total_purchase_amount" => $total_purchase_amount,
+								"currency_symbol" => Setting::key("currency_symbol")
+							])
+							->make();
         }
 
         return view("ui.report.pages.PaginatedProfitReport");

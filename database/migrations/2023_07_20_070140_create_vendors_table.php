@@ -16,11 +16,11 @@ return new class extends Migration
             $table->string("name");
             $table->string("phone");
             $table->string("address");
-            $table->string("email");
+            $table->string("email")->nullable();
             $table->unsignedBigInteger("business_id");
             $table->timestamps();
-	
-	
+
+
 	        $table->softDeletes();
         });
     }

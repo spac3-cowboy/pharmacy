@@ -93,17 +93,25 @@ class TenantContoller extends Controller
             ]);
             $tenantData["user_id"] = $user->id;
 
-            Tenant::create($tenantData);
+            $tenant = Tenant::create($tenantData);
 
 			Setting::create([
-				"business_id" => Auth::user()->owned_tenant->id,
+				"business_id" => $tenant->id,
 				"key" => "logo",
 				"value" => "default_site_logo.png"
 			]);
 			Setting::create([
-				"business_id" => Auth::user()->owned_tenant->id,
+				"business_id" => $tenant->id,
 				"key" => "vat",
 				"value" => "15"
+			]);
+
+			Category::insert([
+				["business_id" => $tenant->id, "name" => "ট্যাবলেট", "image" => "default_category_image"],
+				["business_id" => $tenant->id, "name" => "সিরাপ", "image" => "default_category_image"],
+				["business_id" => $tenant->id, "name" => "ইঞ্জেকশন", "image" => "default_category_image"],
+				["business_id" => $tenant->id, "name" => "মলম", "image" => "default_category_image"],
+				["business_id" => $tenant->id, "name" => "পাউডার", "image" => "default_category_image"],
 			]);
 
             return true;

@@ -26,14 +26,8 @@
                     </div>
                     <div class="col-12">
                         <div class="mb-1">
-                            <label class="form-label" for="first-name-column">Email</label>
-                            <input type="email" id="last-name-column" class="form-control" placeholder="Email" name="email" required="">
-                        </div>
-                    </div>
-                    <div class="col-12">
-                        <div class="mb-1">
                             <label class="form-label" for="city-column">Phone</label>
-                            <input type="text" id="city-column" class="form-control" placeholder="Phone" name="phone" required="">
+                            <input type="text" id="city-column" class="form-control" placeholder="Phone" name="phone" required>
                             <small>Enter phone with country code (+000) </small>
                         </div>
                     </div>

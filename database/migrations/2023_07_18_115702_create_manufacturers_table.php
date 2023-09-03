@@ -17,12 +17,12 @@ return new class extends Migration
 
             $table->string("name");
             $table->string("phone");
-            $table->string("email");
+            $table->string("email")->nullable();
             $table->double("payable")->default(0);
             $table->string("address")->nullable();
             $table->timestamps();
-	
-	
+
+
 	        $table->softDeletes();
         });
     }

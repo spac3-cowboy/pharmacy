@@ -18,5 +18,10 @@ class SettingSeeder extends Seeder
 			"key" => "vat",
 			"value" => "15"
         ]);
+        Setting::create([
+	        "business_id" => 1,
+			"key" => "logo",
+			"value" => "default_site_logo.png"
+        ]);
     }
 }

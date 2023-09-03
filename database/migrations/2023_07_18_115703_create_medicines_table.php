@@ -21,7 +21,7 @@ return new class extends Migration
             $table->double("price");
             $table->double("manufacturing_price");
             $table->string("strength");
-            //$table->string("image");
+            $table->string("image")->default("default_category_image.png");
             $table->boolean("globally_visible")->default(false);
             $table->unsignedBigInteger("category_id");
             $table->unsignedBigInteger("unit_id");

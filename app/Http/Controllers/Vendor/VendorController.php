@@ -68,7 +68,6 @@ class VendorController extends Controller
     {
         Vendor::create([
             "name" => $request->name,
-            "email" => $request->email,
             "phone" => $request->phone,
             "address" => $request->address,
             "business_id" => Auth::user()->owned_tenant->id

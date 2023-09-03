@@ -7,7 +7,6 @@
                 </th>
                 <th>Name</th>
                 <th>Phone</th>
-                <th>Email</th>
                 <th>Address</th>
                 <th>Purchases</th>
                 <th>Action</th>
@@ -94,7 +93,6 @@
                     { data: 'id', name: 'id' },
                     { data: 'name', name: 'name' },
                     { data: 'phone', name: 'phone' },
-                    { data: 'email', name: 'email' },
                     { data: 'address', name: 'address' },
                     { data: 'purchases', name: 'purchases' },
                     { data: 'action', name: 'action', orderable: false, searchable: false },

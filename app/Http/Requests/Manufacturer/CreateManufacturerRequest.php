@@ -24,7 +24,6 @@ class CreateManufacturerRequest extends FormRequest
         return [
             "name" => "required|string",
             "phone" => "required|string",
-            "email" => "required|string",
             "address" => "required|string"
         ];
     }

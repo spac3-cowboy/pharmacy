@@ -184,9 +184,9 @@ export default function CartTable(props) {
                                 <td>{cart.stock ? cart.stock?.expiry_date : '' }</td>
                                 <td>
                                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                                        <i onClick={()=>increaseQuantity(cart.id, cart.batch)} className="ri-add-circle-line cursor-pointer" style={{ marginTop: "5px" }}></i>
-                                        <input type="number" value={cart.quantity} style={{ width:"3em" }} />
                                         <i onClick={()=>decreaseQuantity(cart.id, cart.batch)}  className="ri-indeterminate-circle-line cursor-pointer"></i>
+                                        <input type="number" value={cart.quantity} style={{ width:"3em" }} />
+                                        <i onClick={()=>increaseQuantity(cart.id, cart.batch)} className="ri-add-circle-line cursor-pointer" style={{ marginTop: "5px" }}></i>
                                     </div>
                                 </td>
                                 <td>{cart.stock ? cart.stock.mrp : ''}</td>

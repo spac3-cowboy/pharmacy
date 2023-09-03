@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Category\Category;
+use App\Models\Tenant\Tenant;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 

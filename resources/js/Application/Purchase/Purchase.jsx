@@ -154,6 +154,8 @@ export default function Purchase() {
         if ( !paid && paid != 0 ) return ;
 
         let items = cartMedicines.map(cm => {
+
+			console.log("vendor_id", `#cm-${cm.id} #vendor_id input`, document.querySelector(`#cm-${cm.id} #vendor_id input`))
             return {
                 "medicine_id" : cm.id,
                 "manufacturing_date" : document.querySelector(`#cm-${cm.id} #manu_date`).value,
@@ -163,11 +165,10 @@ export default function Purchase() {
                 "buy_price" : document.querySelector(`#cm-${cm.id} #buy_price`).value,
                 "flat_discount" : document.querySelector(`#cm-${cm.id} #discount`).value,
                 "batch" : document.querySelector(`#cm-${cm.id} #batch`).value,
-                "vendor_id" : document.querySelector(`#cm-${cm.id} #vendor_id`).value,
-                "manufacturer_id" : manufacturerid
+                "vendor_id" : parseInt(document.querySelector(`#cm-man-${cm.id}`)?.dataset.manid),
+                "manufacturer_id" : parseInt(document.querySelector(`#cm-ven-${cm.id}`).dataset.venid),
             }
         });
-
         // check if all items are set
         let allSet = items.find(item=>{
             if (!item.manufacturing_date.length) return true;
@@ -176,14 +177,13 @@ export default function Purchase() {
             if (item.mrp <= 0) return true;
             if (item.buy_price <= 0) return true;
             if (item.flat_discount < 0) return true;
-            if ( item.vendor_id == 0 ) {
-                console.log(item.vendor_id)
+            if ( item.vendor_id == 0 && item.manufacturer_id == 0 )
+			{
+                console.log("vendor_id : " + item.vendor_id)
+                console.log("manufacturer_id : " + item.manufacturer_id)
                 return true;
             }
-            if ( item.manufacturer_id == 0 ) {
-                console.log(item.manufacturer_id)
-                return true;
-            }
+
             return false;
         });
 
@@ -320,7 +320,7 @@ export default function Purchase() {
                                                             <input className="form-control form-control-sm  p-1" type="date" id="expiry_date" name="expiry_date" />
                                                         </td>
                                                         <td>
-                                                            <div className="d-flex">
+                                                            <div className="d-flex"  id={"cm-man-" + cm.id} data-manid="0">
                                                                 <Select
                                                                     styles={{zIndex: "2910"}}
                                                                     id="manufacturer_id"
@@ -328,13 +328,19 @@ export default function Purchase() {
                                                                     className="w-100"
 																	value={selectedManufacturer}
                                                                     options={ manufacturers.map(m => { return { value: m.id, label: m.name } }) }
-                                                                    onChange={ (e)=>{ setSelectedManufacturer(e); setManufacturerId(e.value); resetVen(e); } }
+                                                                    onChange={ (e)=>{
+																			setSelectedManufacturer(e);
+																			setManufacturerId(e.value);
+																			resetVen(e);
+																			document.querySelector("#cm-man-" + cm.id).dataset.manid = e.value;
+																		}
+																	}
                                                                 />
                                                             </div>
                                                         </td>
                                                         <td>
 
-															<div className="d-flex">
+															<div className="d-flex" id={"cm-ven-" + cm.id} data-venid="0">
 																<Select
 																	styles={{zIndex: "2910"}}
 																	id="vendor_id"
@@ -342,7 +348,13 @@ export default function Purchase() {
 																	className="w-100"
 																	options={ vendors.map(v => { return { value: v.id, label: v.name } }) }
 																	value={ selectedVendor }
-																	onChange={ (e)=> { setSelectedVendor(e); setVendorId(e.value); resetManu(e); } }
+																	onChange={ (e)=> {
+																			setSelectedVendor(e);
+																			setVendorId(e.value);
+																			resetManu(e);
+																			document.querySelector("#cm-ven-" + cm.id).dataset.venid = e.value;
+																		}
+																	}
 																/>
 															</div>
                                                         </td>
@@ -400,8 +412,8 @@ export default function Purchase() {
                             </tr>
                             <tr>
                                 <td className="py-1">Paid</td>
-                                <td className="py-1">
-                                    <input onChange={ () => { changePaid(paid) } } className="form-control form-control-sm w-50" type="number" id="paid" name="piad" />
+                                <td className="py-1 px-0">
+                                    <input onChange={ () => { changePaid(paid) } } className="form-control form-control-sm w-75" type="number" id="paid" name="piad" />
                                     <button className="btn btn-success p-0 px-1 m-1" onClick={payingFull}>FULL</button>
                                 </td>
                             </tr>

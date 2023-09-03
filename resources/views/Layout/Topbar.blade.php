@@ -202,7 +202,7 @@
             <li class="dropdown">
                 <a class="nav-link dropdown-toggle arrow-none nav-user px-2" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
                     <span class="account-user-avatar">
-                        <img src="/assets/images/users/{{ auth()->user()->image }}" alt="user-image" width="32" class="rounded-circle">
+                        {{ auth()->user()->name }}
                     </span>
                     <span class="d-lg-flex flex-column gap-1 d-none">
                         <h5 class="my-0">{{ Auth::user()->name ?? "" }}</h5>
@@ -212,10 +212,10 @@
                 <div class="dropdown-menu dropdown-menu-end dropdown-menu-animated profile-dropdown">
 
                     <!-- Profile -->
-                    <a href="{{ route('profile') }}" class="dropdown-item">
-                        <i class="mdi mdi-logout me-1"></i>
-                        <span>Profile</span>
-                    </a>
+{{--                    <a href="{{ route('profile') }}" class="dropdown-item">--}}
+{{--                        <i class="mdi mdi-logout me-1"></i>--}}
+{{--                        <span>Profile</span>--}}
+{{--                    </a>--}}
 
                     <!-- Log Out -->
 					<form method="post" action="{{ route('auth.logout') }}" style="display: inline;">

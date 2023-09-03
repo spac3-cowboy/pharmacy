@@ -91,7 +91,7 @@
                                     </div>
                                     <div class="mb-2">
                                         <div class="form-check">
-                                            <input type="checkbox" class="form-check-input" id="checkmeout0">
+                                            <input name="remember_me" type="checkbox" class="form-check-input" id="checkmeout0">
                                             <label class="form-check-label" for="checkmeout0">Remember me</label>
                                         </div>
                                     </div>

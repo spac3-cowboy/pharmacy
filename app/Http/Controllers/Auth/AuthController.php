@@ -63,7 +63,7 @@ class AuthController extends Controller
     {
         //
     }
-	
+
 	public function profile()
 	{
 		return view("ui.profile.pages.Profile");
@@ -80,7 +80,8 @@ class AuthController extends Controller
             "email" => "required|email",
             "password" => "required|string"
         ]);
-        if ( Auth::attempt($request->only(["email", "password"])) )
+		$rem = $request->get("remember_me") == "on";
+        if ( Auth::attempt($request->only(["email", "password"]), $rem) )
 		{
 			if ( Auth::user()->user_type == 1 )
 			{

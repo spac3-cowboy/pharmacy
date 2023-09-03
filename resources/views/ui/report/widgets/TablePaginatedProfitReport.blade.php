@@ -72,7 +72,7 @@
                 processing: true,
                 serverSide: true,
                 "ajax": {
-                    "url": "{{ route('reports.sales') }}",
+                    "url": "{{ route('reports.profit') }}",
                     "type": 'GET',
                     "data": function (d) {
                         d.from = $("#from").val();
@@ -86,8 +86,8 @@
                     },
                     "dataType": "json",
                     "dataSrc": function (json) {
-                        document.querySelector("#total-sales-value").innerText = json.total_sales_value;
-                        // $("#total_commission").html('Total Commission : <small>£</small>' + parseFloat(json.total_amount).toFixed(2));
+                        document.querySelector("#total-sales-value").innerText = json.total_sold_amount + json.currency_symbol;
+                        document.querySelector("#total-purchase-value").innerText = json.total_purchase_amount + json.currency_symbol;
                         return json.data;
                     },
                 },

@@ -7,7 +7,6 @@
                 </th>
                 <th>Name</th>
                 <th>Phone</th>
-                <th>Email</th>
                 <th>Address</th>
                 <th>Payable</th>
                 <th>Medicine</th>
@@ -99,7 +98,6 @@
                     { data: 'id', name: 'id' },
                     { data: 'name', name: 'name' },
                     { data: 'phone', name: 'phone' },
-                    { data: 'email', name: 'email' },
                     { data: 'address', name: 'address' },
                     { data: 'payable', name: 'payable' },
                     { data: 'medicine', name: 'medicine' },

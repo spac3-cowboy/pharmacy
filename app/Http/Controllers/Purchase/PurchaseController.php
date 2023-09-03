@@ -27,25 +27,25 @@ class PurchaseController extends Controller
         if ( $request->ajax() )
 		{
             return DataTables::of($purchases)
-                    ->addColumn("medicines", function ($purchase) {
-                        return $purchase->items->reduce(function ($total, $item, $i){
-                            return $i+1 .". ". $item->medicine->name . "<br />";
-                        },"");
-                    })
-                    ->addColumn('action', function ($purchase) {
-                        $viewPurchaseUrl = route('purchases.show', [ 'id' => $purchase->id ] );
-                        $editUrl = route('purchases.edit', [ 'purchase' => $purchase->id ] );
-                        $destroyRoute = route('purchases.destroy', [ 'purchase' => $purchase->id] );
-                        $csrf_token = csrf_token();
-						if ( $purchase->sale ) {
-							return "
-                                <a href=\"$viewPurchaseUrl\" class=\"action-icon\"> <i class=\"mdi mdi-eye\"></i></a>
-                                <a href=\"$editUrl\" class=\" hide action-icon\"> <i class=\"mdi mdi-square-edit-outline\"></i></a>
-                               ";
-						}
-                    })
-                    ->rawColumns(["medicines", "action"])
-                    ->make();
+					->addColumn("medicines", function ($purchase) {
+					return $purchase->items->reduce(function ($total, $item, $i){
+						return $i+1 .". ". $item->medicine->name . "<br />";
+					},"");
+				})
+				->addColumn('action', function ($purchase) {
+					$viewPurchaseUrl = route('purchases.show', [ 'id' => $purchase->id ] );
+					$editUrl = route('purchases.edit', [ 'purchase' => $purchase->id ] );
+					$destroyRoute = route('purchases.destroy', [ 'purchase' => $purchase->id] );
+					$csrf_token = csrf_token();
+					if ( !$purchase->sale ) {
+						return "
+							<a href=\"$viewPurchaseUrl\" class=\"action-icon\"> <i class=\"mdi mdi-eye\"></i></a>
+							<a href=\"$editUrl\" class=\" hide action-icon\"> <i class=\"mdi mdi-square-edit-outline\"></i></a>
+						   ";
+					}
+				})
+				->rawColumns(["medicines", "action"])
+				->make();
         }
         return view("ui.purchase.pages.PaginatedPurchases", [
             "purchases" => $purchases
@@ -69,6 +69,7 @@ class PurchaseController extends Controller
     public function store(Request $request)
     {
         $items = $request->items;
+		//dd($items);
         $purchase_date = $request->t["purchase_date"];
         $paid = $request->t["paid"];
         $amount = collect($items)->reduce(function ($total, $item) {
@@ -183,9 +184,9 @@ class PurchaseController extends Controller
         $manufacturers = Manufacturer::where("business_id", Auth::user()->owned_tenant->id)->get();
         $vendors = Vendor::where("business_id", Auth::user()->owned_tenant->id)->get();
         $medicines = Medicine::with(["manufacturer"])
-                     ->where("business_id", Auth::user()->owned_tenant->id)
-//	                 ->orWhere("globally_visible", true)
-                     ->get();
+							 ->where("business_id", Auth::user()->owned_tenant->id)
+		//	                 ->orWhere("globally_visible", true)
+							 ->get();
         return [
             "msg" => "success",
             "manufacturers" => $manufacturers,
